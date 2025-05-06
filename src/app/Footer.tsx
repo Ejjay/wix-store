@@ -7,11 +7,11 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-x-12 gap-y-16 md:col-span-3 lg:grid-cols-6">
           <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-            <div className="text-2xl font-bold">EJ Shop</div>
+            <div className="text-2xl font-bold">Ej Shop</div>
             <p className="mt-7 text-base leading-relaxed text-muted-foreground">
                &quot;Commit to the Lord whatever you do, and he will establish your plans.&quot;
                 <br />
-               <span className="text-base leading-relaxed text-muted-foreground font-bold italic">— Proverbs 16:3</span>
+               <span className="text-base leading-relaxed text-muted-foreground font-bold">— Proverbs 16:3</span>
                </p>
 
             <ul className="mt-9 flex items-center space-x-3">
