@@ -52,7 +52,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
+        sans: ['var(--font-poppins)'],
+        poppins: ['Poppins', 'sans-serif'],
         mono: ["var(--font-geist-mono)"],
       },
       borderRadius: {
