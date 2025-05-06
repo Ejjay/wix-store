@@ -9,10 +9,10 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
             <div className="text-2xl font-bold">EJ Shop</div>
             <p className="mt-7 text-base leading-relaxed text-muted-foreground">
-              "Commit to the Lord whatever you do, and he will establish your plans."
-              <br />
-              <span className="text-base leading-relaxed text-muted-foreground font-bold italic">— Proverbs 16:3</span>
-            </p>
+               &quot;Commit to the Lord whatever you do, and he will establish your plans.&quot;
+                <br />
+               <span className="text-base leading-relaxed text-muted-foreground font-bold italic">— Proverbs 16:3</span>
+               </p>
 
             <ul className="mt-9 flex items-center space-x-3">
               <li>
