@@ -5,7 +5,7 @@ import { Poppins } from "next/font/google";
 import Footer from "./Footer";
 import "./globals.css";
 import Navbar from "./Navbar";
-import ReactQueryProvider from "./ReactQueryProvider";
+import ReactQueryProvider from "./ReactQueryProvider"; 
 
 const poppins = Poppins({ 
   subsets: ["latin"],
