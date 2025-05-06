@@ -14,10 +14,10 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Flow Shop",
-    absolute: "Flow Shop",
+    template: "%s | EJ Shop",
+    absolute: "EJ Shop",
   },
-  description: "A full-stack e-commerce application built with Next.js 15",
+  description: "Your one-stop online shop for quality products at affordable prices.",
 };
 
 export default function RootLayout({
