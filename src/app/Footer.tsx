@@ -15,6 +15,7 @@ export default function Footer() {
                </p>
 
             <ul className="mt-9 flex items-center space-x-3">
+            {/*Twitter svg*/}
               <li>
                 <a
                   href="#"
@@ -31,7 +32,7 @@ export default function Footer() {
                   </svg>
                 </a>
               </li>
-
+            {/*Facebook svg*/}
               <li>
                 <a
                   href="#"
@@ -48,7 +49,7 @@ export default function Footer() {
                   </svg>
                 </a>
               </li>
-
+            {/* Twitter svg*/}
               <li>
                 <a
                   href="#"
@@ -67,7 +68,7 @@ export default function Footer() {
                   </svg>
                 </a>
               </li>
-
+            {/*Github svg*/}
               <li>
                 <a
                   href="#"
