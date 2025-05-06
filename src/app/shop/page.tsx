@@ -88,7 +88,7 @@ async function ProductResults({
     <div className="space-y-10 group-has-[[data-pending]]:animate-pulse">
       <p className="text-center text-xl">
         {products.totalCount}{" "}
-        {products.totalCount === 1 ? "product" : "products"} found
+        {products.totalCount === 1 ? "product" : "products"} available
       </p>
       <div className="flex grid-cols-2 flex-col gap-5 sm:grid xl:grid-cols-3 2xl:grid-cols-4">
         {products.items.map((product) => (
