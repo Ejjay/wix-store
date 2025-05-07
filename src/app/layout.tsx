@@ -32,6 +32,20 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
   />
+  <link rel="manifest" href="/manifest.json" />
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/worker.js').catch(function(err) {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+          });
+        }
+      `
+    }}
+  />
       </head>
       <body className={poppins.className}>
         <ThemeProvider

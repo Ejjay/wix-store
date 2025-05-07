@@ -35,7 +35,7 @@ export default function Footer() {
             {/*Facebook svg*/}
               <li>
                 <a
-                  href="#"
+                  href="https://www.facebook.com/share/1LCeKq1JEc/"
                   title=""
                   className="flex size-7 items-center justify-center rounded-full bg-foreground text-background transition-all duration-200 hover:bg-primary focus:bg-primary"
                 >
@@ -49,7 +49,7 @@ export default function Footer() {
                   </svg>
                 </a>
               </li>
-            {/* Twitter svg*/}
+            {/* instagram svg*/}
               <li>
                 <a
                   href="#"
@@ -71,7 +71,7 @@ export default function Footer() {
             {/*Github svg*/}
               <li>
                 <a
-                  href="#"
+                  href="https://github.com/ejjays"
                   title=""
                   className="flex size-7 items-center justify-center rounded-full bg-foreground text-background transition-all duration-200 hover:bg-primary focus:bg-primary"
                 >
