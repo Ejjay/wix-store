@@ -49,7 +49,7 @@ export default function Page() {
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Cookies</h2>
         <p>
-          Our application may use "cookies" to enhance user experience. You can choose to have your mobile/computer warn you each time a cookie is being sent, or you can choose to turn off all cookies. If you disable cookies, some features may not function properly.
+          Our application may use &quot;cookies&quot; to enhance user experience. You can choose to have your mobile/computer warn you each time a cookie is being sent, or you can choose to turn off all cookies. If you disable cookies, some features may not function properly.
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Changes to Our Privacy Policy</h2>
