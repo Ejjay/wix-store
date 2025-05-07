@@ -105,7 +105,7 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="#"
+                  href="/shop-info/features"
                   title=""
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
