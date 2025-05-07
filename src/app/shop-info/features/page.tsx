@@ -9,10 +9,10 @@ export default function Page() {
   return (
     <main className="mx-auto max-w-4xl space-y-10 px-5 py-10 leading-7">
       <div className="text-left sm:text-center">
-        <h2 className="py-5 text-3xl font-bold">EJ Shop Features</h2>
+        <h2 className="py-5 text-3xl font-bold">Features</h2>
         <p>
-          At EJ Shop, we aim to provide convenient and reliable shopping services 
-          to our local community. Here are the features we offer to make your 
+          At EJ Shop app, we aim to provide straight-forward and convenient shopping services 
+          to our customers. Here are the features we offer to make your 
           shopping experience better.
         </p>
 
@@ -26,7 +26,7 @@ export default function Page() {
           <br />
           - Straightforward checkout process
           <br />
-          - Mobile-friendly website
+          - Mobile-friendly Application
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Payment Options</h2>
@@ -69,8 +69,6 @@ export default function Page() {
         <h2 className="mt-10 py-5 text-3xl font-bold">Special Offers</h2>
         <p>
           - Regular discounts
-          <br />
-          - Local promotions
           <br />
           - Special deals for regular customers
           <br />

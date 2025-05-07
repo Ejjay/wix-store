@@ -11,15 +11,15 @@ export default function Page() {
       <div className="text-left sm:text-center">
         <h2 className="py-5 text-3xl font-bold">Terms and Conditions</h2>
         <p>
-          Welcome to the EJ Shop! By using our application, you agree to be bound
+          Welcome to EJ Shop app! By using our service, you agree to be bound
           by these terms and conditions. Please read them carefully before
           placing any orders.
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Ordering and Delivery</h2>
         <p>
-          All orders placed through the EJ Shop app will be processed and
-          delivered in a timely manner. We strive to ship all orders within 3-5
+          All orders placed through our application will be processed and
+          delivered in a timely manner. We make sure to ship all orders within 3-5
           business days, but delivery times may vary depending on your location
           and the availability of the items ordered.
         </p>
@@ -29,11 +29,11 @@ export default function Page() {
           We accept the following payment methods:
           <br />
           <br />
-          - Gcash
+          • Gcash
           <br />
-          - Credit/Debit Cards
+          • Credit/Debit Cards
           <br />
-          - Cash on Delivery (for select locations)
+          • Cash on Delivery (for select locations)
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Returns and Refunds</h2>

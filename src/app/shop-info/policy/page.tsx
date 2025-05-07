@@ -19,13 +19,15 @@ export default function Page() {
           We may collect personal information from you when you use our services. This information may include:
           <br />
           <br />
-          - Name
+          • Name
           <br />
-          - Email address
+          • Email address
           <br />
-          - Phone number
+          • Phone number
           <br />
-          - Payment information
+          • Payment information
+          <br />
+          • Location
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">How We Use Your Information</h2>
@@ -33,13 +35,13 @@ export default function Page() {
           We use your information to:
           <br />
           <br />
-          - Process your orders
+          • Process your orders
           <br />
-          - Improve our services
+          • Improve our services
           <br />
-          - Communicate with you regarding your orders or inquiries
+          • Communicate with you regarding your orders or inquiries
           <br />
-          - Send promotional materials and updates (if you have opted in)
+          • Send promotional materials and updates (if you have opted in)
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Data Security</h2>
