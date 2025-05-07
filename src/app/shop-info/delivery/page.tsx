@@ -11,7 +11,7 @@ export default function Page() {
       <div className="text-left sm:text-center">
         <h2 className="py-5 text-3xl font-bold">Delivery Information</h2>
         <p>
-          EJ Shop offers delivery services within Quezon City and Metro Manila areas 
+          EJ Shop offers delivery services all around Metro Manila areas 
           through our trusted delivery partners. Please read the following information 
           about our delivery process.
         </p>
@@ -39,7 +39,7 @@ export default function Page() {
           •  Joyride
           <br />
           <br />
-          You can choose your preferred delivery service during checkout.
+          You can choose your preferred delivery service by directly contacting <a href="https://m.me/ejjaysz" className="underline text-blue-600 hover:text-blue-800"> Seller</a>.
         </p>
 
         <h2 className="mt-10 py-5 text-3xl font-bold">Delivery Fees</h2>
