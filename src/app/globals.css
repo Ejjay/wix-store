@@ -106,7 +106,7 @@
 .floating-suggestions {
   display: inline-flex;
   gap: 12px;
-  animation: floatSuggestions 30s linear infinite;
+  animation: floatSuggestions 250s linear infinite;
   white-space: nowrap;
   will-change: transform;
 }

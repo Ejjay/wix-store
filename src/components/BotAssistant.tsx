@@ -52,8 +52,8 @@ const FloatingSuggestions = () => {
       </div>
 
       {/* Row 2 - Right to Left */}
-      <div className="suggestions-container">
-        <div className="floating-suggestions reverse">
+            <div className="suggestions-container">
+        <div className="floating-suggestions">
           {[...row2, ...row2].map((suggestion, index) => (
             <button
               key={index}
