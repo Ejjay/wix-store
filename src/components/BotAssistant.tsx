@@ -28,9 +28,9 @@ export default function BotAssistant() {
       </div>
       
       <SheetContent 
-        side="bottom" 
-        className="rounded-t-[20px] h-[80vh] p-0" // Added p-0 to remove default padding
-        hideCloseIcon // This prop will be handled in the sheet.tsx component
+       side="bottom" 
+       className="h-[90vh] rounded-t-[20px] p-0"
+        hideCloseIcon
       >
         <div className="flex flex-col h-full">
           {/* Pill handle with reduced margin */}
