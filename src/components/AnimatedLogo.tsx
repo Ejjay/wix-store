@@ -8,8 +8,8 @@ export default function AnimatedLogo({ width = 150, height = 150 }: AnimatedLogo
     <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="-2 -2 32 32"
-  height="150"
-  width="150"
+  height="200"
+  width="200"
 >
   <circle r="0" fill="#ff0000">
     <animateMotion

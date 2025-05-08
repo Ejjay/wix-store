@@ -36,35 +36,41 @@ export default function BotAssistant() {
       >
         <div className="flex flex-col h-full">
           {/* Top Navigation Bar */}
-          <div className="flex items-center justify-between px-4 py-3 border-b">
-            <button onClick={() => setIsOpen(false)} className="p-2">
-              <X className="h-6 w-6" />
-            </button>
-            
-            <div className="flex flex-col items-center flex-1">
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold">Store Assistant</h2>
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  {/* Your verified badge SVG here */}
-                </svg>
-              </div>
-              <p className="text-sm text-gray-500">with AI</p>
-            </div>
-            
-            <div className="w-10"> {/* Empty div for spacing */} </div>
-          </div>
+<div className="flex items-center justify-between px-4 py-3 border-b">
+  <button onClick={() => setIsOpen(false)} className="p-2">
+    <X className="h-6 w-6" />
+  </button>
+  
+  {/* Center content with absolute positioning */}
+<div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+  <div className="flex items-center gap-1">
+    <h2 className="text-m font-semibold">Store Assistant</h2>
+    <Image 
+      src="/verified.png"
+      alt="Verified Badge"
+      width={12}
+      height={12}
+      className="w-5 h-5"
+    />
+  </div>
+  <p className="text-xs text-gray-500">Official AI</p>
+</div>
+  
+  {/* Placeholder for spacing */}
+  <div className="w-10"></div>
+</div>
 
-          {/* Main Content Area */}
-          <div className="flex-1 px-4 py-6">
-            <div className="flex justify-center mb-8">
-              <AnimatedLogo width={150} height={150} />
-              <div className="w-24 h-24">
-              </div>
-            </div>
+{/* Main Content Area */}
+<div className="flex-1 px-4 py-6">
+  {/* Center the logo */}
+  <div className="flex justify-center items-center mb-8">
+    <AnimatedLogo width={150} height={150} />
+  </div>
 
-            <h3 className="text-xl text-center mb-6">
-              Ask Store Assistant anything
-            </h3>
+  {/* Make the text bold */}
+  <h3 className="text-xl text-center font-semibold mb-6">
+    Ask Store Assistant anything
+  </h3>
           </div>
 
           {/* Message Input Area */}
