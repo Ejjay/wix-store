@@ -170,7 +170,7 @@ export default function BotAssistant() {
             </div>
 
             {/* Make the text bold */}
-            <h3 className="text-xl text-center font-semibold mb-6">
+            <h3 className="text-xl text-center font-semibold mb-8">
               Ask Store Assistant anything
             </h3>
 
