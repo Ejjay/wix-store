@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     description: 'Your one-stop shop for quality products at affoedable prices',
     images: [
       {
-        url: 'https://ejstore21.vercel.app/open-graph/og-image.png',
+        url: 'https://ejstore21.vercel.app/og-image.png',
         width: 1200,
         height: 630,
         alt: 'EJ Shop Preview',
