@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://your-domain.com',
+    url: 'https://ejstore21.vercel.app',
     siteName: 'EJ Shop',
     title: 'EJ Shop - Quality Products Online',
     description: 'Your one-stop shop for quality products at affoedable prices',
