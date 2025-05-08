@@ -180,15 +180,17 @@ export default function BotAssistant() {
 
           {/* Message Input Area */}
           <div className="p-4 border-t">
-            <div className="flex items-center gap-2 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-800">
-              <input
-                type="text"
-                placeholder="Type question..."
-                className="flex-1 bg-transparent outline-none text-sm"
-              />
+            <div className="flex items-center gap-2">
               <button className="text-blue-500">
                 {/* Your sparkles icon SVG here */}✨
               </button>
+              <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center">
+                <input
+                  type="text"
+                  placeholder="Type question..."
+                  className="flex-1 bg-transparent outline-none text-sm"
+                />
+              </div>
             </div>
           </div>
         </div>
