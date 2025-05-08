@@ -1,5 +1,11 @@
-<!-- From Uiverse.io by SelfMadeSystem --> 
-<svg
+interface AnimatedLogoProps {
+  width?: number;
+  height?: number;
+}
+
+export default function AnimatedLogo({ width = 150, height = 150 }: AnimatedLogoProps) {
+  return (
+    <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="-2 -2 32 32"
   height="150"
@@ -1214,3 +1220,5 @@
     ></animateMotion>
   </circle>
 </svg>
+  );
+}
