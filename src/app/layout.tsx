@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import "./globals.css";
 import Navbar from "./Navbar";
 import ReactQueryProvider from "./ReactQueryProvider"; 
+import BotAssistant from "@/components/BotAssistant";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -57,6 +58,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <Navbar />
             <div className="min-h-[50vh]">{children}</div>
+             <BotAssistant />
             <Footer />
           </ReactQueryProvider>
           <Toaster />

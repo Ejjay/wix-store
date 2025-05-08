@@ -1,14 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger Redirect Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>True Full-Screen Bottom Sheet</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.js"></script>
+  <style>
+    .full-screen-sheet {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0; /* No rounding to ensure full coverage */
+    }
+  </style>
 </head>
 <body>
-    <h2>Click the button below to message Ej on Messenger</h2>
-    <a href="https://m.me/ejjaysz?text=Hello%20Ej,%20I'm%20interested%20in%20your%20products!%20I%20Love%20You!" target="_blank">
-        <button>Message Ej</button>
-    </a>
+  <div id="app">
+    <v-app>
+      <v-container class="text-center">
+        <v-btn color="primary" @click="sheet = true">Open Full-Screen Bottom Sheet</v-btn>
+
+        <v-bottom-sheet v-model="sheet" persistent>
+          <v-sheet class="pa-4 full-screen-sheet">
+            <h3 class="text-h5">True Full-Screen Bottom Sheet</h3>
+            <p>Tap the close button to dismiss.</p>
+            <v-btn color="error" @click="sheet = false">Close</v-btn>
+          </v-sheet>
+        </v-bottom-sheet>
+      </v-container>
+    </v-app>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          sheet: false,
+        };
+      }
+    });
+  </script>
 </body>
 </html>
