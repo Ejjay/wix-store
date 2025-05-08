@@ -78,15 +78,12 @@ export default function Page() {
         </p>
 
         <p className="mt-10">
-          For delivery inquiries or assistance, please contact us at
-          <span className="mx-1"> {/* margin for spacing */} </span>
-          <a href="tel:09669828873" className="underline text-blue-600 hover:text-blue-800">
-            09669828873
+          For delivery inquiries or assistance, please contact us at <span className="mx-0"> {/* margin for spacing */} </span>
+          <a href="tel:09669828873" className="underline text-blue-600 hover:text-blue-800">09669828873
           </a> 
-          <span className="mx-1">or email us at</span>
+          <span className="mx-0"> or email us at</span>
           <span className="mx-1"> {/* margin for spacing */} </span>
-          <a href="mailto:christsonalloso021@gmail.com" className="underline text-blue-600 hover:text-blue-800">
-            christsonalloso021@gmail.com
+          <a href="mailto:christsonalloso021@gmail.com" className="underline text-blue-600 hover:text-blue-800">christsonalloso021@gmail.com
           </a>.
         </p>
       </div>
