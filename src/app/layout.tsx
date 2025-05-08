@@ -14,12 +14,25 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: {
-    template: "%s | EJ Shop",
-    absolute: "EJ Shop",
+  title: 'EJ Shop',
+  description: 'Your one-stop shop for quality products',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://your-domain.com',
+    siteName: 'EJ Shop',
+    title: 'EJ Shop - Quality Products Online',
+    description: 'Your one-stop shop for quality products at affoedable prices',
+    images: [
+      {
+        url: 'https://ejstore21.vercel.app/open-graph/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'EJ Shop Preview',
+      },
+    ],
   },
-  description: "Your one-stop online shop for quality products at affordable prices.",
-};
+}
 
 export default function RootLayout({
   children,
