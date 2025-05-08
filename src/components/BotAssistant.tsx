@@ -146,7 +146,7 @@ export default function BotAssistant() {
             <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
               <div className="w-10 h-1 bg-gray-300 rounded-full mb-3"></div>
               <div className="flex items-center gap-1">
-                <h2 className="text-m font-semibold">Store Assistant</h2>
+                <h2 className="text-m font-semibold">Shop Assistant</h2>
                 <Image
                   src="/verified.png"
                   alt="Verified Badge"
@@ -171,7 +171,7 @@ export default function BotAssistant() {
 
             {/* Make the text bold */}
             <h3 className="text-xl text-center font-semibold mb-8">
-              Ask Store Assistant anything
+              Ask Shop Assistant anything
             </h3>
 
             {/* Add the FloatingSuggestions component here */}
