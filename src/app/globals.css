@@ -84,3 +84,37 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Floating Suggestions Animation */
+
+@keyframes floatSuggestions {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.suggestions-container {
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.floating-suggestions {
+  display: inline-flex;
+  gap: 12px;
+  animation: floatSuggestions 30s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.floating-suggestions.reverse {
+  animation-direction: reverse;
+}
+
+.floating-suggestions:hover {
+  animation-play-state: paused;
+}

@@ -6,6 +6,81 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
+import { useEffect, useRef } from "react";
+
+// Add the FloatingSuggestions component
+const FloatingSuggestions = () => {
+  const suggestions = [
+    "📱 Browse electronics", "👕 Latest fashion trends", "🎁 Gift ideas", 
+    "💰 View deals", "❓ How to order", "🏠 Home decor", 
+    "📚 Books and media", "🎮 Gaming accessories", "👟 Sports equipment",
+    "🎨 Art supplies", "🔧 Tools and hardware", "🌿 Garden essentials",
+    "🍳 Kitchen gadgets", "💄 Beauty products", "🎵 Musical instruments",
+    "👶 Baby items", "🐕 Pet supplies", "🏃‍♂️ Fitness gear",
+    "🚗 Auto accessories", "💻 Computer parts", "📸 Photography gear",
+    "🎪 Party supplies", "🎒 Back to school", "🏕️ Camping gear",
+    "🎭 Costumes", "🎨 Craft supplies", "🧸 Toys and games",
+    "⌚ Watches", "👜 Handbags", "🕶️ Sunglasses",
+    "🎪 Outdoor furniture", "🛋️ Indoor furniture", "🖼️ Wall art",
+    "📱 Phone accessories", "💡 Smart home", "🎧 Audio equipment",
+    "🎮 Video games", "📺 TV & Entertainment", "🧴 Skincare",
+    "👗 Women's clothing", "👔 Men's clothing", "🎀 Accessories",
+    "🏋️ Exercise equipment", "🎿 Winter sports", "🏄‍♂️ Summer sports",
+    "🎨 DIY projects", "🧩 Puzzles", "💝 Special offers",
+    "🎁 Gift cards", "🔥 New arrivals"
+  ];
+
+  // Create three rows of suggestions
+  const row1 = suggestions.slice(0, 17);
+  const row2 = suggestions.slice(17, 34);
+  const row3 = suggestions.slice(34);
+
+  return (
+    <div className="flex flex-col gap-3 mb-6">
+      {/* Row 1 - Left to Right */}
+      <div className="suggestions-container">
+        <div className="floating-suggestions">
+          {[...row1, ...row1].map((suggestion, index) => (
+            <button
+              key={index}
+              className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Row 2 - Right to Left */}
+      <div className="suggestions-container">
+        <div className="floating-suggestions reverse">
+          {[...row2, ...row2].map((suggestion, index) => (
+            <button
+              key={index}
+              className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Row 3 - Left to Right */}
+      <div className="suggestions-container">
+        <div className="floating-suggestions">
+          {[...row3, ...row3].map((suggestion, index) => (
+            <button
+              key={index}
+              className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function BotAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -98,6 +173,9 @@ export default function BotAssistant() {
             <h3 className="text-xl text-center font-semibold mb-6">
               Ask Store Assistant anything
             </h3>
+
+            {/* Add the FloatingSuggestions component here */}
+            <FloatingSuggestions />
           </div>
 
           {/* Message Input Area */}
