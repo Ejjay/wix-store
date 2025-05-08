@@ -35,7 +35,7 @@ const FloatingSuggestions = () => {
   const row2 = suggestions.slice(17, 34);
   const row3 = suggestions.slice(34);
 
-  return (
+    return (
     <div className="flex flex-col gap-3 mb-6">
       {/* Row 1 - Left to Right */}
       <div className="suggestions-container">
@@ -43,7 +43,7 @@ const FloatingSuggestions = () => {
           {[...row1, ...row1].map((suggestion, index) => (
             <button
               key={index}
-              className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+              className="whitespace-nowrap px-4 py-2 rounded-full bg-white hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors text-sm text-black dark:text-white shadow-sm"
             >
               {suggestion}
             </button>
@@ -52,12 +52,12 @@ const FloatingSuggestions = () => {
       </div>
 
       {/* Row 2 - Right to Left */}
-            <div className="suggestions-container">
+      <div className="suggestions-container">
         <div className="floating-suggestions">
           {[...row2, ...row2].map((suggestion, index) => (
             <button
               key={index}
-              className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+              className="whitespace-nowrap px-4 py-2 rounded-full bg-white hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors text-sm text-black dark:text-white shadow-sm"
             >
               {suggestion}
             </button>
@@ -71,7 +71,7 @@ const FloatingSuggestions = () => {
           {[...row3, ...row3].map((suggestion, index) => (
             <button
               key={index}
-              className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+              className="whitespace-nowrap px-4 py-2 rounded-full bg-white hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors text-sm text-black dark:text-white shadow-sm"
             >
               {suggestion}
             </button>
@@ -127,7 +127,7 @@ export default function BotAssistant() {
 
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[20px] p-0"
+        className="h-[90vh] rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black"
         hideCloseIcon
       >
         <div className="flex flex-col h-full">
@@ -180,10 +180,10 @@ export default function BotAssistant() {
 
           {/* Message Input Area */}
           <div className="p-4 border-t">
-            <div className="flex items-center gap-2 px-4 py-3 rounded-full bg-gray-100">
+            <div className="flex items-center gap-2 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-800">
               <input
                 type="text"
-                placeholder="Message"
+                placeholder="Type question..."
                 className="flex-1 bg-transparent outline-none text-sm"
               />
               <button className="text-blue-500">
