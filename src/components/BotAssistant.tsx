@@ -43,6 +43,7 @@ export default function BotAssistant() {
   
   {/* Center content with absolute positioning */}
 <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+ <div className="w-10 h-1 bg-gray-300 rounded-full mb-3"></div>
   <div className="flex items-center gap-1">
     <h2 className="text-m font-semibold">Store Assistant</h2>
     <Image 
