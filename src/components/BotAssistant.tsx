@@ -29,13 +29,15 @@ export default function BotAssistant() {
       
       <SheetContent 
         side="bottom" 
-        className="rounded-t-[20px] h-[80vh]"
+        className="rounded-t-[20px] h-[80vh] p-0" // Added p-0 to remove default padding
+        hideCloseIcon // This prop will be handled in the sheet.tsx component
       >
-        {/* Your bottom sheet content goes here */}
-        <div className="flex flex-col h-full p-4">
-          <div className="mx-auto w-12 h-1.5 bg-gray-300 rounded-full mb-8" />
-          <div className="flex-1">
-            {/* Add your content here */}
+        <div className="flex flex-col h-full">
+          {/* Pill handle with reduced margin */}
+          <div className="mx-auto w-12 h-1.5 bg-gray-300 rounded-full mt-3 mb-4" />
+          
+          {/* Content with padding */}
+          <div className="flex-1 px-6">
             <h2 className="text-2xl font-bold mb-4">Bot Assistant</h2>
             <p>This is your bot assistant content.</p>
           </div>
