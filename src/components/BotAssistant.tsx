@@ -83,9 +83,9 @@ const FloatingSuggestions = () => {
 
 export default function BotAssistant() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   // Handle touch start event
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -111,17 +111,6 @@ export default function BotAssistant() {
     setTouchEnd(0);
   };
 
-  // Handle keyboard visibility
-  useEffect(() => {
-    const handleResize = () => {
-      const isKeyboard = window.visualViewport?.height < window.innerHeight;
-      setIsKeyboardVisible(isKeyboard);
-    };
-
-    window.visualViewport?.addEventListener('resize', handleResize);
-    return () => window.visualViewport?.removeEventListener('resize', handleResize);
-  }, []);
-
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <div className="fixed bottom-6 right-6 z-50">
@@ -138,10 +127,7 @@ export default function BotAssistant() {
 
       <SheetContent
         side="bottom"
-        className={cn(
-          "h-[90vh] rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black",
-          "flex flex-col fixed bottom-0 transition-all duration-300"
-        )}
+        className="fixed bottom-0 h-[90vh] overflow-hidden rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black"
         hideCloseIcon
       >
         <div className="flex flex-col h-full">
@@ -178,45 +164,51 @@ export default function BotAssistant() {
 
           {/* Main Content Area */}
           <div className="flex-1 px-4 py-6 overflow-hidden">
-            {/* Logo with dynamic sizing */}
-            <div className={cn(
-              "flex justify-center items-center transition-all duration-300",
-              isKeyboardVisible ? "mb-2" : "mb-8"
-            )}>
+            {/* Animated Logo with smooth transition */}
+            <div 
+              className={cn(
+                "transition-all duration-300 ease-in-out flex justify-center items-center",
+                isInputFocused ? "scale-50 mb-2" : "scale-100 mb-8"
+              )}
+            >
               <AnimatedLogo 
-                width={isKeyboardVisible ? 80 : 150} 
-                height={isKeyboardVisible ? 80 : 150} 
+                width={isInputFocused ? 75 : 150} 
+                height={isInputFocused ? 75 : 150} 
               />
             </div>
 
-            {/* Heading with dynamic spacing */}
-            <h3 className={cn(
-              "text-xl text-center font-semibold transition-all duration-300",
-              isKeyboardVisible ? "mb-2 text-lg" : "mb-8"
-            )}>
+            {/* Heading with transition */}
+            <h3 
+              className={cn(
+                "text-xl text-center font-semibold transition-all duration-300",
+                isInputFocused ? "opacity-0 h-0" : "opacity-100 mb-8"
+              )}
+            >
               Ask Shop Assistant anything
             </h3>
 
-            {/* Floating suggestions with dynamic height */}
-            <div className={cn(
-              "transition-all duration-300",
-              isKeyboardVisible ? "scale-90 origin-bottom" : ""
-            )}>
+            {/* Floating Suggestions with transition */}
+            <div 
+              className={cn(
+                "transition-all duration-300 ease-in-out",
+                isInputFocused ? "opacity-0 h-0 overflow-hidden" : "opacity-100"
+              )}
+            >
               <FloatingSuggestions />
             </div>
           </div>
 
           {/* Message Input Area */}
-          <div className="p-4 border-t mt-auto">
+          <div className="p-4 border-t mt-auto bg-white dark:bg-gray-800">
             <div className="flex items-center gap-2">
               <button className="text-blue-500 flex-shrink-0">✨</button>
-              <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center">
+              <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
                 <input
                   type="text"
                   placeholder="Type question..."
-                  className="flex-1 bg-transparent outline-none text-sm min-h-[24px]"
-                  onFocus={() => setIsKeyboardVisible(true)}
-                  onBlur={() => setIsKeyboardVisible(false)}
+                  className="flex-1 bg-transparent outline-none text-sm"
+                  onFocus={() => setIsInputFocused(true)}
+                  onBlur={() => setIsInputFocused(false)}
                 />
               </div>
             </div>

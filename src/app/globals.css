@@ -131,3 +131,24 @@
     min-height: 90vh;
   }
 }
+
+
+
+.sheet-content {
+  height: 90vh !important;
+  max-height: 90vh !important;
+  position: fixed !important;
+  bottom: 0 !important;
+}
+
+/* Ensure smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Prevent content from affecting sheet height */
+.overflow-hidden {
+  overflow: hidden;
+}
