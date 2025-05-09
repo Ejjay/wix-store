@@ -13,6 +13,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  
 }
 
 @layer base {
@@ -84,6 +85,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* disable image longpress */
+
 
 
 /* Floating Suggestions Animation */

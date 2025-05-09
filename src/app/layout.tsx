@@ -7,6 +7,7 @@ import "./globals.css";
 import Navbar from "./Navbar";
 import ReactQueryProvider from "./ReactQueryProvider"; 
 import BotAssistant from "@/components/BotAssistant";
+import DisableContextMenu from "@/components/DisableContextMenu";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -68,7 +69,8 @@ export default function RootLayout({
           enableSystem={true}
           disableTransitionOnChange
         >
-          <ReactQueryProvider>
+          <ReactQueryProvider> 
+           <DisableContextMenu />
             <Navbar />
             <div className="min-h-[50vh]">{children}</div>
              <BotAssistant />
