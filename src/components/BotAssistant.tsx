@@ -4,9 +4,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AnimatedLogo from "./AnimatedLogo";
-import { useEffect, useRef } from "react";
 
 // Add the FloatingSuggestions component
 const FloatingSuggestions = () => {
@@ -35,7 +34,7 @@ const FloatingSuggestions = () => {
   const row2 = suggestions.slice(17, 34);
   const row3 = suggestions.slice(34);
 
-    return (
+  return (
     <div className="flex flex-col gap-3 mb-6">
       {/* Row 1 - Left to Right */}
       <div className="suggestions-container">
@@ -86,6 +85,7 @@ export default function BotAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   // Handle touch start event
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -111,6 +111,17 @@ export default function BotAssistant() {
     setTouchEnd(0);
   };
 
+  // Handle keyboard visibility
+  useEffect(() => {
+    const handleResize = () => {
+      const isKeyboard = window.visualViewport?.height < window.innerHeight;
+      setIsKeyboardVisible(isKeyboard);
+    };
+
+    window.visualViewport?.addEventListener('resize', handleResize);
+    return () => window.visualViewport?.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <div className="fixed bottom-6 right-6 z-50">
@@ -127,7 +138,10 @@ export default function BotAssistant() {
 
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black"
+        className={cn(
+          "h-[90vh] rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black",
+          "flex flex-col fixed bottom-0 transition-all duration-300"
+        )}
         hideCloseIcon
       >
         <div className="flex flex-col h-full">
@@ -163,32 +177,46 @@ export default function BotAssistant() {
           </div>
 
           {/* Main Content Area */}
-          <div className="flex-1 px-4 py-6">
-            {/* Center the logo */}
-            <div className="flex justify-center items-center mb-8">
-              <AnimatedLogo width={150} height={150} />
+          <div className="flex-1 px-4 py-6 overflow-hidden">
+            {/* Logo with dynamic sizing */}
+            <div className={cn(
+              "flex justify-center items-center transition-all duration-300",
+              isKeyboardVisible ? "mb-2" : "mb-8"
+            )}>
+              <AnimatedLogo 
+                width={isKeyboardVisible ? 80 : 150} 
+                height={isKeyboardVisible ? 80 : 150} 
+              />
             </div>
 
-            {/* Make the text bold */}
-            <h3 className="text-xl text-center font-semibold mb-8">
+            {/* Heading with dynamic spacing */}
+            <h3 className={cn(
+              "text-xl text-center font-semibold transition-all duration-300",
+              isKeyboardVisible ? "mb-2 text-lg" : "mb-8"
+            )}>
               Ask Shop Assistant anything
             </h3>
 
-            {/* Add the FloatingSuggestions component here */}
-            <FloatingSuggestions />
+            {/* Floating suggestions with dynamic height */}
+            <div className={cn(
+              "transition-all duration-300",
+              isKeyboardVisible ? "scale-90 origin-bottom" : ""
+            )}>
+              <FloatingSuggestions />
+            </div>
           </div>
 
           {/* Message Input Area */}
-          <div className="p-4 border-t">
+          <div className="p-4 border-t mt-auto">
             <div className="flex items-center gap-2">
-              <button className="text-blue-500">
-                {/* Your sparkles icon SVG here */}✨
-              </button>
+              <button className="text-blue-500 flex-shrink-0">✨</button>
               <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center">
                 <input
                   type="text"
                   placeholder="Type question..."
-                  className="flex-1 bg-transparent outline-none text-sm"
+                  className="flex-1 bg-transparent outline-none text-sm min-h-[24px]"
+                  onFocus={() => setIsKeyboardVisible(true)}
+                  onBlur={() => setIsKeyboardVisible(false)}
                 />
               </div>
             </div>
@@ -197,4 +225,9 @@ export default function BotAssistant() {
       </SheetContent>
     </Sheet>
   );
+}
+
+// Utility function for conditionally joining classNames
+function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
 }
