@@ -15,6 +15,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ejstore21.vercel.app'),
   title: 'EJ Shop',
   description: 'Your one-stop shop for quality products',
   openGraph: {

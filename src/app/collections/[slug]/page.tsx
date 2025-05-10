@@ -18,7 +18,9 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const collection = await getCollectionBySlug(getWixServerClient(), slug);
 
-  if (!collection) notFound();
+  if (!collection) {
+    notFound();
+  }
 
   const banner = collection.media?.mainMedia?.image;
 
@@ -26,7 +28,25 @@ export async function generateMetadata({
     title: collection.name,
     description: collection.description,
     openGraph: {
-      images: banner ? [{ url: banner.url }] : [],
+      title: collection.name,
+      description: collection.description,
+      images: banner
+        ? [
+            {
+              url: banner.url,
+              width: 1200,
+              height: 630,
+              alt: collection.name,
+            },
+          ]
+        : [
+            {
+              url: "/default-collection-image.png",
+              width: 1200,
+              height: 630,
+              alt: collection.name,
+            },
+          ],
     },
   };
 }

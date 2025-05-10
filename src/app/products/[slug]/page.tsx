@@ -21,26 +21,38 @@ interface PageProps {
 export async function generateMetadata({
   params: { slug },
 }: PageProps): Promise<Metadata> {
-  const product = await getProductBySlug(getWixServerClient(), slug);
+  const wixClient = getWixServerClient();
+  const product = await getProductBySlug(wixClient, slug);
 
-  if (!product) notFound();
+  if (!product) {
+    notFound();
+  }
 
   const mainImage = product.media?.mainMedia?.image;
 
   return {
     title: product.name,
-    description: "Get this product on Flow Shop",
+    description: product.description || "Get this product on EJ Shop",
     openGraph: {
+      title: product.name,
+      description: product.description || "Get this product on EJ Shop",
       images: mainImage?.url
         ? [
             {
               url: mainImage.url,
-              width: mainImage.width,
-              height: mainImage.height,
-              alt: mainImage.altText || "",
+              width: mainImage.width || 1200,
+              height: mainImage.height || 630,
+              alt: mainImage.altText || product.name,
             },
           ]
-        : undefined,
+        : [
+            {
+              url: "/default-product-image.png",
+              width: 1200,
+              height: 630,
+              alt: product.name,
+            },
+          ],
     },
   };
 }
