@@ -22,21 +22,23 @@ export async function generateMetadata({
     notFound();
   }
 
+  const collectionName = collection.name || "Default Collection Name";
+  const collectionDescription = collection.description || "Default Collection Description";
   const banner = collection.media?.mainMedia?.image;
 
   return {
-    title: collection.name,
-    description: collection.description,
+    title: collectionName,
+    description: collectionDescription,
     openGraph: {
-      title: collection.name,
-      description: collection.description,
+      title: collectionName,
+      description: collectionDescription,
       images: banner
         ? [
             {
               url: banner.url,
               width: 1200,
               height: 630,
-              alt: collection.name,
+              alt: collectionName,
             },
           ]
         : [
@@ -44,7 +46,7 @@ export async function generateMetadata({
               url: "/default-collection-image.png",
               width: 1200,
               height: 630,
-              alt: collection.name,
+              alt: collectionName,
             },
           ],
     },
