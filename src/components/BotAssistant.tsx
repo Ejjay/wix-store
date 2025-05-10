@@ -27,7 +27,7 @@ const FloatingSuggestions = () => {
     "🏋️ Exercise equipment", "🎿 Winter sports", "🏄‍♂️ Summer sports",
     "🎨 DIY projects", "🧩 Puzzles", "💝 Special offers",
     "🎁 Gift cards", "🔥 New arrivals"
-  ];
+  ]; 
 
   // Create three rows of suggestions
   const row1 = suggestions.slice(0, 17);
