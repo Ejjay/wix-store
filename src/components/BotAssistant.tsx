@@ -4,8 +4,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 // Add the FloatingSuggestions component
 const FloatingSuggestions = () => {
@@ -86,6 +87,7 @@ export default function BotAssistant() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Handle touch start event
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -126,8 +128,12 @@ export default function BotAssistant() {
       </div>
 
       <SheetContent
-        side="bottom"
-        className="fixed bottom-0 h-[90vh] overflow-hidden rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black"
+        side={isMobile ? "bottom" : "right"}
+        className={cn(
+          "transition-all duration-300",
+          isMobile ? "fixed bottom-0 h-[90vh] overflow-hidden rounded-t-[20px] p-0 bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black" 
+          : "w-[400px] h-full bg-white dark:bg-gray-800"
+        )}
         hideCloseIcon
       >
         <div className="flex flex-col h-full">
