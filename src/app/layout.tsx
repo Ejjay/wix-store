@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: 'https://ejstore21.vercel.app',
     siteName: 'EJ Shop',
     title: 'EJ Shop - Quality Products Online',
-    description: 'Your one-stop shop for quality products at affoedable prices',
+    description: 'Your one-stop shop for quality products at affordable prices',
     images: [
       {
         url: 'https://ejstore21.vercel.app/og-image.png',
@@ -42,39 +42,40 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta 
-           name="viewport" 
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover"
-         />
-  <link rel="manifest" href="/manifest.json" />
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js').catch(function(err) {
-              console.log('ServiceWorker registration failed: ', err);
-            });
-          });
-        }
-      `
-    }}
-  />
+          name="viewport" 
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                  });
+                });
+              }
+            `
+          }}
+        />
       </head>
-      <body className={poppins.className}>
+      <body className={poppins.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="system"
           enableSystem={true}
           disableTransitionOnChange
+          storageKey="ej-theme"
         >
-          <ReactQueryProvider> 
-           <DisableContextMenu />
+          <ReactQueryProvider>
+            <DisableContextMenu />
             <Navbar />
             <div className="min-h-[50vh]">{children}</div>
-             <BotAssistant />
+            <BotAssistant />
             <Footer />
           </ReactQueryProvider>
           <Toaster />
