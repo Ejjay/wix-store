@@ -66,7 +66,7 @@ export default function RootLayout({
       <body className={poppins.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem={true}
           disableTransitionOnChange
           storageKey="ej-theme"
