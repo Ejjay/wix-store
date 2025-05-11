@@ -1,25 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
-
 import { media as wixMedia } from "@wix/sdk";
-import { ImgHTMLAttributes, useMemo } from "react"; 
+import { ImgHTMLAttributes, useMemo } from "react";
 
-type WixImageProps = Omit<
+type BaseWixImageProps = Omit<
   ImgHTMLAttributes<HTMLImageElement>,
   "src" | "width" | "height" | "alt"
 > & {
   mediaIdentifier: string | undefined;
   placeholder?: string;
   alt?: string | null | undefined;
-} & (
-  | {
-      scaleToFill?: true;
-      width: number;
-      height: number;
-    }
-  | {
-      scaleToFill: false;
-    }
-);
+};
+
+type ScaledWixImageProps = BaseWixImageProps & {
+  scaleToFill?: true;
+  width: number;
+  height: number;
+};
+
+type UnscaledWixImageProps = BaseWixImageProps & {
+  scaleToFill: false;
+  width?: never;
+  height?: never;
+};
+
+type WixImageProps = ScaledWixImageProps | UnscaledWixImageProps;
 
 export default function WixImage({
   mediaIdentifier,
@@ -29,16 +33,19 @@ export default function WixImage({
 }: WixImageProps) {
   const imageUrl = useMemo(() => {
     if (!mediaIdentifier) return placeholder;
+
+    if (props.scaleToFill || props.scaleToFill === undefined) {
+      const scaledProps = props as ScaledWixImageProps;
+      return wixMedia.getScaledToFillImageUrl(
+        mediaIdentifier,
+        scaledProps.width,
+        scaledProps.height,
+        {}
+      );
+    }
     
-    return props.scaleToFill || props.scaleToFill === undefined
-      ? wixMedia.getScaledToFillImageUrl(
-          mediaIdentifier,
-          props.width,
-          props.height,
-          {}
-        )
-      : wixMedia.getImageUrl(mediaIdentifier).url;
-  }, [mediaIdentifier, placeholder, props.scaleToFill, props.width, props.height]);
+    return wixMedia.getImageUrl(mediaIdentifier).url;
+  }, [mediaIdentifier, placeholder, props]);
 
   return <img src={imageUrl} alt={alt || ""} {...props} />;
 }
