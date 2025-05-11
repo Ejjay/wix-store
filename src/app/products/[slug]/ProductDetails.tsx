@@ -12,10 +12,11 @@ import {
 import Badge from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { checkInStock, findVariant } from "@/lib/utils";
 import { products } from "@wix/stores";
 import { InfoIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductMedia from "./ProductMedia";
 import ProductOptions from "./ProductOptions";
 import ProductPrice from "./ProductPrice";
@@ -24,9 +25,52 @@ interface ProductDetailsProps {
   product: products.Product;
 }
 
-export default function ProductDetails({ product }: ProductDetailsProps) {
-  const [quantity, setQuantity] = useState(1);
+function ProductDetailsLoadingSkeleton() {
+  return (
+    <div className="flex flex-col gap-10 md:flex-row lg:gap-20">
+      <div className="basis-2/5">
+        <Skeleton className="aspect-square w-full" />
+        <div className="mt-5 flex flex-wrap gap-5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="size-[100px]" />
+          ))}
+        </div>
+      </div>
+      <div className="basis-3/5 space-y-5">
+        <div className="space-y-2.5">
+          <Skeleton className="h-10 w-[250px]" />
+          <Skeleton className="h-4 w-[100px]" />
+        </div>
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-10 w-[150px]" />
+        <div className="space-y-5">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="space-y-2.5">
+              <Skeleton className="h-4 w-[100px]" />
+              <div className="flex gap-2.5">
+                {Array.from({ length: 3 }).map((_, j) => (
+                  <Skeleton key={j} className="h-10 w-[100px]" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-2.5">
+          <Skeleton className="h-4 w-[100px]" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <div className="flex items-center gap-2.5">
+          <Skeleton className="h-10 flex-1" />
+          <Skeleton className="h-10 w-10" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
+export default function ProductDetails({ product }: ProductDetailsProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >(
@@ -34,13 +78,24 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       ?.map((option) => ({
         [option.name || ""]: option.choices?.[0].description || "",
       }))
-      ?.reduce((acc, curr) => ({ ...acc, ...curr }), {}) || {},
+      ?.reduce((acc, curr) => ({ ...acc, ...curr }), {}) || {}
   );
 
+  useEffect(() => {
+    // Simulate loading state
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <ProductDetailsLoadingSkeleton />;
+  }
+
   const selectedVariant = findVariant(product, selectedOptions);
-
   const inStock = checkInStock(product, selectedOptions);
-
   const availableQuantity =
     selectedVariant?.stock?.quantity ?? product.stock?.quantity;
 
@@ -49,7 +104,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
   const selectedOptionsMedia = product.productOptions?.flatMap((option) => {
     const selectedChoice = option.choices?.find(
-      (choice) => choice.description === selectedOptions[option.name || ""],
+      (choice) => choice.description === selectedOptions[option.name || ""]
     );
     return selectedChoice?.media?.items ?? [];
   });

@@ -1,3 +1,5 @@
+"use client";
+
 import WixImage from "@/components/WixImage";
 import { cn } from "@/lib/utils";
 import { products } from "@wix/stores";
@@ -10,11 +12,16 @@ interface ProductMediaProps {
 }
 
 export default function ProductMedia({ media }: ProductMediaProps) {
-  const [selectedMedia, setSelectedMedia] = useState(media?.[0]);
+  const [selectedMedia, setSelectedMedia] = useState<products.MediaItem | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setSelectedMedia(media?.[0]);
+    setMounted(true);
+    setSelectedMedia(media?.[0] || null);
   }, [media]);
+
+  // Don't render anything until client-side hydration is complete
+  if (!mounted) return null;
 
   if (!media?.length) return null;
 
@@ -27,6 +34,7 @@ export default function ProductMedia({ media }: ProductMediaProps) {
         {selectedImage?.url ? (
           <Zoom key={selectedImage.url}>
             <WixImage
+              key={selectedImage.url}
               mediaIdentifier={selectedImage.url}
               alt={selectedImage.altText}
               width={1000}
@@ -48,9 +56,9 @@ export default function ProductMedia({ media }: ProductMediaProps) {
         <div className="flex flex-wrap gap-5">
           {media.map((mediaItem) => (
             <MediaPreview
-              key={mediaItem._id}
+              key={mediaItem.image?.url || mediaItem.video?.files?.[0]?.url}
               mediaItem={mediaItem}
-              isSelected={mediaItem._id === selectedMedia?._id}
+              isSelected={mediaItem === selectedMedia}
               onSelect={() => setSelectedMedia(mediaItem)}
             />
           ))}
@@ -80,9 +88,10 @@ function MediaPreview({ mediaItem, isSelected, onSelect }: MediaPreviewProps) {
   return (
     <div
       className={cn(
-        "relative cursor-pointer bg-secondary",
-        isSelected && "outline outline-1 outline-primary",
+        "relative cursor-pointer rounded border-2",
+        isSelected ? "border-primary" : "border-transparent"
       )}
+      onClick={onSelect}
     >
       <WixImage
         mediaIdentifier={imageUrl || resolvedThumbnailUrl}
