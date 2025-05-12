@@ -117,7 +117,7 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto px-4 py-6">
+        <div className="flex-1 overflow-y-auto px-0 py-6">
           {/* Animated Logo with smooth transition */}
           <div 
             className={`transition-all duration-300 ease-in-out flex justify-center items-center
@@ -166,29 +166,32 @@ export default function AIAssistantPage() {
       {/* Keep your existing styles for floating suggestions */}
       <style jsx global>{`
         .suggestions-container {
-          overflow: hidden;
-          margin: 0 -20px;
+         overflow: hidden;
+         margin: 0;
+         width: 100%;
         }
         
-        .floating-suggestions {
-          display: flex;
-          gap: 8px;
-          animation: scroll 20s linear infinite;
-          padding: 0 20px;
-        }
+       .floating-suggestions {
+        display: flex;
+        gap: 8px;
+        animation: scroll 20s linear infinite;
+        padding: 0;
+        width: 100%;
+        justify-content: flex-start;
+       }
         
         .floating-suggestions:nth-child(2) {
           animation-direction: reverse;
         }
         
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
+    @keyframes scroll {
+     0% {
+       transform: translateX(0);
+     }
+     100% {
+       transform: translateX(calc(-1 * (100% - 8px))); /* Adjust based on gap */
+     }
+   }
       `}</style>
     </div>
   );

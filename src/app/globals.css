@@ -100,21 +100,21 @@
   }
 }
 
-.suggestions-container {
+/* .suggestions-container {
   overflow: hidden;
   width: 100%;
   margin: 0 auto;
   transition: all 0.3s ease;
-}
+} */
 
-.floating-suggestions {
+/* .floating-suggestions {
   display: inline-flex;
   gap: 12px;
   animation: floatSuggestions 250s linear infinite;
   white-space: nowrap;
   will-change: transform;
   transition: all 0.3s ease;
-}
+} */
 
 .floating-suggestions.reverse {
   animation-direction: reverse;
