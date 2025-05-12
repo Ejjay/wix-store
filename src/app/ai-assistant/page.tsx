@@ -81,39 +81,43 @@ const FloatingSuggestions = () => {
   );
 };
 
+
+
 export default function AIAssistantPage() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black">
-      <div className="max-w-4xl mx-auto">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black">
+      <div className="h-full flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <button onClick={() => router.back()} className="p-2">
-            <X className="h-6 w-6" />
+        <div className="flex items-center justify-between px-4 py-3 border-b bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <button 
+            onClick={() => router.back()} 
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+          >
+            <X className="h-4 w-4" />
           </button>
 
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-1">
-              <h2 className="text-m font-semibold">Shop Assistant</h2>
+              <h2 className="text-sm font-semibold">Shop Assistant</h2>
               <Image
                 src="/verified.png"
                 alt="Verified Badge"
-                width={12}
-                height={12}
+                width={8}
+                height={8}
                 className="w-5 h-5"
               />
             </div>
             <p className="text-xs text-gray-500">Official AI</p>
           </div>
 
-          {/* Placeholder for spacing */}
           <div className="w-10"></div>
         </div>
 
         {/* Main Content Area */}
-        <div className="px-4 py-6">
+        <div className="flex-1 overflow-y-auto px-4 py-6">
           {/* Animated Logo with smooth transition */}
           <div 
             className={`transition-all duration-300 ease-in-out flex justify-center items-center
@@ -140,26 +144,26 @@ export default function AIAssistantPage() {
           >
             <FloatingSuggestions />
           </div>
+        </div>
 
-          {/* Message Input Area */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 border-t bg-white dark:bg-gray-800">
-            <div className="max-w-4xl mx-auto flex items-center gap-2">
-              <button className="text-blue-500 flex-shrink-0">✨</button>
-              <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
-                <input
-                  type="text"
-                  placeholder="Type question..."
-                  className="flex-1 bg-transparent outline-none text-sm"
-                  onFocus={() => setIsInputFocused(true)}
-                  onBlur={() => setIsInputFocused(false)}
-                />
-              </div>
+        {/* Message Input Area */}
+        <div className="border-t bg-white dark:bg-gray-800 p-4">
+          <div className="max-w-4xl mx-auto flex items-center gap-2">
+            <button className="text-blue-500 flex-shrink-0">✨</button>
+            <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
+              <input
+                type="text"
+                placeholder="Type question..."
+                className="flex-1 bg-transparent outline-none text-sm"
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setIsInputFocused(false)}
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Add required styles for floating suggestions animation */}
+      {/* Keep your existing styles for floating suggestions */}
       <style jsx global>{`
         .suggestions-container {
           overflow: hidden;
@@ -186,6 +190,6 @@ export default function AIAssistantPage() {
           }
         }
       `}</style>
-    </main>
+    </div>
   );
 }
