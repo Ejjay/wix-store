@@ -8,6 +8,7 @@ import Navbar from "./Navbar";
 import ReactQueryProvider from "./ReactQueryProvider"; 
 import BotAssistant from "@/components/BotAssistant";
 import DisableContextMenu from "@/components/DisableContextMenu";
+import Loading from "./loading";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({
         />
       </head>
       <body className={poppins.className} suppressHydrationWarning>
+        <Loading />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
