@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function Loading() {
+function LoadingContent() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const pathname = usePathname();
@@ -49,5 +49,13 @@ export default function Loading() {
         }}
       />
     </div>
+  );
+}
+
+export default function Loading() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoadingContent />
+    </Suspense>
   );
 }
