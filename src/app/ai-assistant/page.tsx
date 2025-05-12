@@ -34,9 +34,9 @@ const FloatingSuggestions = () => {
   const row3 = suggestions.slice(34);
 
   // References for scrollable containers
-  const scrollRef1 = useRef(null);
-  const scrollRef2 = useRef(null);
-  const scrollRef3 = useRef(null);
+  const scrollRef1 = useRef<HTMLDivElement | null>(null);
+  const scrollRef2 = useRef<HTMLDivElement | null>(null);
+  const scrollRef3 = useRef<HTMLDivElement | null>(null);
 
   // Swipe configuration for minimal swipe distance
   const swipeConfig = {
@@ -69,7 +69,7 @@ const FloatingSuggestions = () => {
   });
 
   // Duplicate the content so that when it scrolls by 50% (half its total width) the loop is seamless.
-  const duplicateRow = (row) => (
+  const duplicateRow = (row: string[]) => (
     <>
       {row.map((suggestion, index) => (
         <button
@@ -231,37 +231,37 @@ export default function AIAssistantPage() {
         }
 
         @keyframes scroll {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
 
-@keyframes scroll-reverse {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
+        @keyframes scroll-reverse {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(0%);
+          }
+        }
 
-.floating-suggestions {
-  display: flex;
-  gap: 8px;
-  padding: 0;
-  justify-content: flex-start;
-  animation: scroll 250s linear infinite;
-}
+        .floating-suggestions {
+          display: flex;
+          gap: 8px;
+          padding: 0;
+          justify-content: flex-start;
+          animation: scroll 250s linear infinite;
+        }
 
-.suggestions-container {
-  overflow: hidden;
-  white-space: nowrap;
-  width: 100%;
-  display: flex;
-}
+        .suggestions-container {
+          overflow: hidden;
+          white-space: nowrap;
+          width: 100%;
+          display: flex;
+        }
       `}</style>
     </div>
   );
