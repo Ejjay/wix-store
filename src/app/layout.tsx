@@ -32,6 +32,12 @@ export const metadata: Metadata = {
         height: 630,
         alt: 'EJ Shop Preview',
       },
+      {
+        url: '/ai-assistant',
+        width: 1200,
+        height: 630,
+        alt: 'AI Shop Assistant',
+      },
     ],
   },
 }
