@@ -1,5 +1,9 @@
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
-  return <Loader2 className="mx-auto my-16 animate-spin" />;
+  return (
+    <div className="fixed top-0 left-0 w-full z-50">
+      <Skeleton className="h-1 w-full" />
+    </div>
+  );
 }
