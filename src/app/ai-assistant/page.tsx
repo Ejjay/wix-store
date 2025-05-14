@@ -7,6 +7,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { useSwipeable } from "react-swipeable";
+import { queryProducts } from "@/wix-api/products";
+import { wixBrowserClient } from "@/lib/wix-client.browser";
+import { products } from '@wix/stores';
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
@@ -134,12 +137,24 @@ const FloatingSuggestions = ({ isHidden }: FloatingSuggestionsProps) => {
 };
 
 export default function AIAssistantPage() {
+  const [products, setProducts] = useState<products.Product[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const productsData = await queryProducts(wixBrowserClient, {
+        limit: 100, // Adjust limit as needed
+        sort: "last_updated"
+      });
+      setProducts(productsData.items);
+    }
+    fetchProducts();
+  }, []);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -159,16 +174,30 @@ export default function AIAssistantPage() {
     setIsLoading(true);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      // Create a context string containing product information
+      const productContext = products.map(product => `
+        Product: ${product.name}
+        Description: ${product.description}
+        Price: ${product.price}
+        SKU: ${product.sku}
+        Stock: ${product.stock?.inStock ? "In Stock" : "Out of Stock"}
+        ---
+      `).join('\n');
+
       const chat = model.startChat({
         history: messages.map(msg => ({
           role: msg.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: msg.content }]
-        }))
+        })),
+        context: `You are a helpful shopping assistant for our store. Here is information about our products:
+          ${productContext}
+          Please use this information to help customers find products and answer their questions.`
       });
 
       const result = await chat.sendMessage(userMessage);
-      const text = await result.response.text(); // Correct response parsing
+      const text = await result.response.text();
       
       setMessages(prev => [...prev, { role: 'assistant', content: text }]);
     } catch (error) {
@@ -229,7 +258,7 @@ export default function AIAssistantPage() {
           )}
 
           {/* Messages */}
-          <div className="px-4 mt-4"> {/* Add margin-top here */}
+          <div className="px-4 mt-4">
             {messages.map((message, index) => (
               <div
                 key={index}
