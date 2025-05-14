@@ -16,7 +16,11 @@ type Message = {
   content: string;
 };
 
-const FloatingSuggestions = ({ isHidden }) => {
+interface FloatingSuggestionsProps {
+  isHidden: boolean;
+}
+
+const FloatingSuggestions = ({ isHidden }: FloatingSuggestionsProps) => {
   const suggestions = [
     "📱 Browse electronics", "👕 Latest fashion trends", "🎁 Gift ideas", 
     "💰 View deals", "❓ How to order", "🏠 Home decor", 
