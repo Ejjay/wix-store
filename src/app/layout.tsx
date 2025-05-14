@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import "./globals.css";
 import Navbar from "./Navbar";
 import ReactQueryProvider from "./ReactQueryProvider"; 
-// import BotAssistant from "@/components/BotAssistant";
+import BotAssistant from "@/components/BotAssistant";
 import DisableContextMenu from "@/components/DisableContextMenu";
 import Loading from "./loading";
 
@@ -83,7 +83,7 @@ export default function RootLayout({
             <DisableContextMenu />
             <Navbar />
             <div className="min-h-[50vh]">{children}</div>
-          {/*  <BotAssistant /> */}
+             <BotAssistant />
             <Footer />
           </ReactQueryProvider>
           <Toaster />
