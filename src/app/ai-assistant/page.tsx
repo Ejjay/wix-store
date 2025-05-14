@@ -138,16 +138,51 @@ const FloatingSuggestions = ({ isHidden }: FloatingSuggestionsProps) => {
 
 // Function to build product context
 function buildProductContext(products: products.Product[]) {
-  return products.map(product => `
-    Product Name: "${product.name}"
-    Product Description: "${product.description?.substring(0, 200) || 'No description available'}"
-    Product Price: ${product.priceData?.formatted?.price || 'Price not available'}
-    Product SKU: ${product.sku || 'No SKU'}
-    Product Availability: ${product.stock?.inStock ? "In Stock" : "Out of Stock"}
-    Product Category: "${product.category?.name || 'Uncategorized'}"
-    Product Tags: ${product.tags?.join(', ') || 'No tags'}
-    ===========
-  `).join('\n');
+  return `
+PRODUCT CATALOG (${products.length} total products):
+${products.map(p => `
+[PRODUCT]
+- Name: ${p.name}
+- Price: ${p.priceData?.formatted?.price || 'Price not available'}
+- Stock: ${p.stock?.inStock ? `In Stock (${p.stock.quantity} available)` : 'Out of Stock'}
+- Category: ${p.category?.name || 'Uncategorized'}
+- Description: ${p.description?.substring(0, 100) || 'No description'}...
+[END PRODUCT]
+`).join('\n')}
+
+CATALOG END
+`;
+}
+
+// Function to fetch all products with pagination
+async function fetchAllProducts(client: any) {
+  if (!client) {
+    console.error("Wix client not initialized");
+    throw new Error("Wix client not initialized");
+  }
+
+  console.log("Starting to fetch products with client:", !!client);
+
+  let allProducts: products.Product[] = [];
+  let currentPage = 0;
+  const pageSize = 100;
+  let hasMore = true;
+
+  while (hasMore) {
+    const productsData = await queryProducts(client, {
+      limit: pageSize,
+      offset: currentPage * pageSize,
+      sort: "last_updated"
+    });
+
+    allProducts = allProducts.concat(productsData.items);
+
+    // Determine if there are more products to fetch
+    hasMore = productsData.items.length === pageSize;
+    currentPage++;
+  }
+
+  return allProducts;
 }
 
 export default function AIAssistantPage() {
@@ -161,55 +196,140 @@ export default function AIAssistantPage() {
   const router = useRouter();
 
   useEffect(() => {
-    async function initializeChat() {
-      try {
-        const productsData = await queryProducts(wixBrowserClient, {
-          limit: 100,
-          sort: "last_updated"
-        });
-        setProducts(productsData.items);
+    // Debug logging
+    const debugProducts = async () => {
+      const products = await fetchAllProducts(wixBrowserClient);
+      console.log("Available products:", products.map(p => ({
+        name: p.name,
+        price: p.priceData?.formatted?.price,
+        inStock: p.stock?.inStock
+      })));
+    };
+    
+    debugProducts();
+  }, []);
 
-        const productContext = buildProductContext(productsData.items);
+  const initializeChat = async () => {
+    try {
+      console.log("Fetching products...");
+      
+      const productsData = await fetchAllProducts(wixBrowserClient);
+      console.log("Products fetched:", productsData.length);
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const chat = model.startChat({
-          history: [],
-          context: `
-SYSTEM INSTRUCTIONS:
-You are a shopping assistant for our online store "EJ Shopq". You must:
-1. Provide direct product recommendations from our available products.
-2. Offer suggestions based on only our products.
-3. Use default popular products if specifics aren't given.
-4. If users don't know what to choose, suggest based on our products we have.
-5. Always check product availability before recommending.
+      if (productsData.length === 0) {
+        console.error("No products found in catalog");
+        throw new Error("Product catalog is empty");
+      }
 
-PRODUCT CATALOG:
+      setProducts(productsData);
+      const productContext = buildProductContext(productsData);
+      
+      console.log("Product context built:", productContext);
+
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+      const chat = model.startChat({
+        history: [],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        },
+      });
+
+      await chat.sendMessage(`
+SYSTEM INITIALIZATION - PRODUCT CATALOG AND RULES:
+
 ${productContext}
 
-IMPORTANT: 
-- Base ALL recommendations on the above products.
-- If a product is out of stock, suggest alternatives in the same category.
-- Highlight key features and benefits of recommended products.
-          `.trim()
-        });
+YOUR ROLE: You are EJ Shop's AI shopping assistant. You have the following responsibilities:
 
-        setChatInstance(chat);
+1. You have COMPLETE knowledge of our product catalog listed above
+2. You must NEVER say you need a product list - you have it above
+3. You can ONLY recommend products from our catalog
+4. You must check stock before recommending items
+5. Be confident and specific about our products
+6. If asked about products we don't have, explain we don't carry those items
+7. Always include prices in recommendations
 
-        const testResult = await chat.sendMessage("List all available products in our store.");
-        const testResponse = await testResult.response.text();
-        console.log("Initial AI response:", testResponse);
+Respond with "INITIALIZED" if you understand these instructions.
+      `);
 
-      } catch (error) {
-        console.error("Error initializing chat:", error);
-      }
+      setChatInstance(chat);
+
+      const verificationResponse = await chat.sendMessage(`
+Please confirm:
+1. Total number of products in our catalog
+2. List 3 random products with their prices
+3. Confirm you understand you should never ask for a product list
+      `);
+      
+      const verificationText = await verificationResponse.response.text();
+      console.log("AI Knowledge Verification:", verificationText);
+
+    } catch (error) {
+      console.error("Error initializing chat:", error);
     }
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading || !chatInstance) return;
+
+    const userMessage = inputValue.trim();
+    setInputValue('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+
+    try {
+      const result = await chatInstance.sendMessage(`
+CONTEXT REMINDER: You are EJ Shop's AI assistant with access to our product catalog.
+CURRENT REQUEST: ${userMessage}
+
+Remember:
+1. Only recommend from our catalog
+2. Include prices
+3. Check stock before recommending
+4. Be specific about features
+
+Your response:
+      `.trim());
+
+      const text = await result.response.text();
+      setMessages(prev => [...prev, { role: 'assistant', content: text }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Sorry, I encountered an error. Please try again.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refreshProductContext = async () => {
+    try {
+      const updatedProducts = await fetchAllProducts(wixBrowserClient);
+      setProducts(updatedProducts);
+
+      if (chatInstance) {
+        const newContext = buildProductContext(updatedProducts);
+        await chatInstance.sendMessage(`
+SYSTEM: Updating product catalog information. Please confirm update.
+${newContext}
+`);
+      }
+    } catch (error) {
+      console.error("Error refreshing product context:", error);
+    }
+  };
+
+  useEffect(() => {
     initializeChat();
 
-    const interval = setInterval(() => {
-      if (chatInstance) {
-        refreshProductContext();
-      }
-    }, 300000); // Refresh every 5 minutes
+    const interval = setInterval(refreshProductContext, 300000); // Refresh every 5 minutes
 
     return () => clearInterval(interval);
   }, []);
@@ -234,52 +354,6 @@ IMPORTANT:
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim() || isLoading || !chatInstance) return;
-
-    const userMessage = inputValue.trim();
-    setInputValue('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    setIsLoading(true);
-
-    try {
-      const result = await chatInstance.sendMessage(`
-Remember: You are a shopping assistant of EJ Shop. Only recommend products from our Available Products Given.
-
-Customer message: ${userMessage}
-      `.trim());
-
-      const text = await result.response.text();
-      setMessages(prev => [...prev, { role: 'assistant', content: text }]);
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'Sorry, I encountered an error. Please try again.' 
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const refreshProductContext = async () => {
-    try {
-      const updatedProducts = await queryProducts(wixBrowserClient, {
-        limit: 100,
-        sort: "last_updated"
-      });
-      setProducts(updatedProducts.items);
-
-      if (chatInstance) {
-        const newContext = buildProductContext(updatedProducts.items);
-        await chatInstance.updateContext(newContext);
-      }
-    } catch (error) {
-      console.error("Error refreshing product context:", error);
-    }
-  };
 
   const isHidden = isInputFocused || messages.length > 0;
 
