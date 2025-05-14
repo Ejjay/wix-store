@@ -136,25 +136,96 @@ const FloatingSuggestions = ({ isHidden }: FloatingSuggestionsProps) => {
   );
 };
 
+// Function to build product context
+function buildProductContext(products: products.Product[]) {
+  return products.map(product => `
+    Product Name: "${product.name}"
+    Product Description: "${product.description?.substring(0, 200) || 'No description available'}"
+    Product Price: ${product.priceData?.formatted?.price || 'Price not available'}
+    Product SKU: ${product.sku || 'No SKU'}
+    Product Availability: ${product.stock?.inStock ? "In Stock" : "Out of Stock"}
+    Product Category: "${product.category?.name || 'Uncategorized'}"
+    Product Tags: ${product.tags?.join(', ') || 'No tags'}
+    ===========
+  `).join('\n');
+}
+
 export default function AIAssistantPage() {
   const [products, setProducts] = useState<products.Product[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [chatInstance, setChatInstance] = useState<any>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchProducts() {
-      const productsData = await queryProducts(wixBrowserClient, {
-        limit: 100, // Adjust limit as needed
-        sort: "last_updated"
-      });
-      setProducts(productsData.items);
+    async function initializeChat() {
+      try {
+        const productsData = await queryProducts(wixBrowserClient, {
+          limit: 100,
+          sort: "last_updated"
+        });
+        setProducts(productsData.items);
+
+        const productContext = buildProductContext(productsData.items);
+
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const chat = model.startChat({
+          history: [],
+          context: `
+SYSTEM INSTRUCTIONS:
+You are a shopping assistant for our online store "EJ Shopq". You must:
+1. Provide direct product recommendations from our available products.
+2. Offer suggestions based on only our products.
+3. Use default popular products if specifics aren't given.
+4. If users don't know what to choose, suggest based on our products we have.
+5. Always check product availability before recommending.
+
+PRODUCT CATALOG:
+${productContext}
+
+IMPORTANT: 
+- Base ALL recommendations on the above products.
+- If a product is out of stock, suggest alternatives in the same category.
+- Highlight key features and benefits of recommended products.
+          `.trim()
+        });
+
+        setChatInstance(chat);
+
+        const testResult = await chat.sendMessage("List all available products in our store.");
+        const testResponse = await testResult.response.text();
+        console.log("Initial AI response:", testResponse);
+
+      } catch (error) {
+        console.error("Error initializing chat:", error);
+      }
     }
-    fetchProducts();
+    initializeChat();
+
+    const interval = setInterval(() => {
+      if (chatInstance) {
+        refreshProductContext();
+      }
+    }, 300000); // Refresh every 5 minutes
+
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (chatInstance) {
+      chatInstance.sendMessage("What products do we have in stock?")
+        .then(result => result.response.text())
+        .then(text => {
+          console.log("AI product knowledge test:", text);
+        })
+        .catch(error => {
+          console.error("AI test failed:", error);
+        });
+    }
+  }, [chatInstance]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -166,7 +237,7 @@ export default function AIAssistantPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
+    if (!inputValue.trim() || isLoading || !chatInstance) return;
 
     const userMessage = inputValue.trim();
     setInputValue('');
@@ -174,31 +245,13 @@ export default function AIAssistantPage() {
     setIsLoading(true);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await chatInstance.sendMessage(`
+Remember: You are a shopping assistant of EJ Shop. Only recommend products from our Available Products Given.
 
-      // Create a context string containing product information
-      const productContext = products.map(product => `
-        Product: ${product.name}
-        Description: ${product.description}
-        Price: ${product.price}
-        SKU: ${product.sku}
-        Stock: ${product.stock?.inStock ? "In Stock" : "Out of Stock"}
-        ---
-      `).join('\n');
+Customer message: ${userMessage}
+      `.trim());
 
-      const chat = model.startChat({
-        history: messages.map(msg => ({
-          role: msg.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: msg.content }]
-        })),
-        context: `You are a helpful shopping assistant for our store. Here is information about our products:
-          ${productContext}
-          Please use this information to help customers find products and answer their questions.`
-      });
-
-      const result = await chat.sendMessage(userMessage);
       const text = await result.response.text();
-      
       setMessages(prev => [...prev, { role: 'assistant', content: text }]);
     } catch (error) {
       console.error('Error:', error);
@@ -208,6 +261,23 @@ export default function AIAssistantPage() {
       }]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const refreshProductContext = async () => {
+    try {
+      const updatedProducts = await queryProducts(wixBrowserClient, {
+        limit: 100,
+        sort: "last_updated"
+      });
+      setProducts(updatedProducts.items);
+
+      if (chatInstance) {
+        const newContext = buildProductContext(updatedProducts.items);
+        await chatInstance.updateContext(newContext);
+      }
+    } catch (error) {
+      console.error("Error refreshing product context:", error);
     }
   };
 
@@ -244,7 +314,6 @@ export default function AIAssistantPage() {
 
         {/* Main content area */}
         <div className="flex-1 overflow-y-auto">
-          {/* Welcome elements */}
           {!isHidden && (
             <>
               <div className="flex justify-center items-center mb-8 mt-6">
@@ -257,7 +326,6 @@ export default function AIAssistantPage() {
             </>
           )}
 
-          {/* Messages */}
           <div className="px-4 mt-4">
             {messages.map((message, index) => (
               <div
