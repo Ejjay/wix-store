@@ -2,7 +2,7 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, Send } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AnimatedLogo from "@/components/AnimatedLogo";
@@ -150,43 +150,44 @@ export default function AIAssistantPage() {
   }, [messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!inputValue.trim() || isLoading) return;
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading) return;
 
-  const userMessage = inputValue.trim();
-  setInputValue('');
-  setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-  setIsLoading(true);
+    const userMessage = inputValue.trim();
+    setInputValue('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
 
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
-    const chat = model.startChat({
-      history: messages.map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      }))
-    });
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+      const chat = model.startChat({
+        history: messages.map(msg => ({
+          role: msg.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: msg.content }]
+        }))
+      });
 
-    const result = await chat.sendMessage(userMessage);
-    const text = await result.response.text(); // Correct response parsing
-    
-    setMessages(prev => [...prev, { role: 'assistant', content: text }]);
-  } catch (error) {
-    console.error('Error:', error);
-    setMessages(prev => [...prev, { 
-      role: 'assistant', 
-      content: 'Sorry, I encountered an error. Please try again.' 
-    }]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      const result = await chat.sendMessage(userMessage);
+      const text = await result.response.text(); // Correct response parsing
+      
+      setMessages(prev => [...prev, { role: 'assistant', content: text }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Sorry, I encountered an error. Please try again.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const isHidden = isInputFocused || messages.length > 0;
 
   return (
     <div className="fixed inset-0 w-full h-full bg-gradient-to-b from-white via-gray-100 to-gray-300 dark:bg-gradient-to-b dark:from-gray-800 dark:via-gray-900 dark:to-black">
       <div className="h-full flex flex-col">
+        {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
           <button
             onClick={() => router.back()}
@@ -212,29 +213,23 @@ export default function AIAssistantPage() {
           <div className="w-10"></div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-0 py-6">
-          <div
-            className={`transition-all duration-300 ease-in-out flex justify-center items-center ${
-              isHidden ? "opacity-0 scale-0 mb-2" : "opacity-100 scale-100 mb-8"
-            }`}
-          >
-            <AnimatedLogo
-              width={isHidden ? 0 : 150}
-              height={isHidden ? 0 : 150}
-            />
-          </div>
+        {/* Main content area */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Welcome elements */}
+          {!isHidden && (
+            <>
+              <div className="flex justify-center items-center mb-8 mt-6">
+                <AnimatedLogo width={150} height={150} />
+              </div>
+              <h3 className="text-xl text-center font-semibold mb-8">
+                Ask Shop Assistant anything
+              </h3>
+              <FloatingSuggestions isHidden={isHidden} />
+            </>
+          )}
 
-          <h3
-            className={`text-xl text-center font-semibold transition-all duration-300 ${
-              isHidden ? "opacity-0 h-0" : "opacity-100 mb-8"
-            }`}
-          >
-            Ask Shop Assistant anything
-          </h3>
-
-          <FloatingSuggestions isHidden={isHidden} />
-
-          <div className="flex-1 overflow-y-auto px-4 py-6">
+          {/* Messages */}
+          <div className="px-4 mt-4"> {/* Add margin-top here */}
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -243,7 +238,7 @@ export default function AIAssistantPage() {
                 }`}
               >
                 <div
-                  className={`inline-block p-3 rounded-lg ${
+                  className={`inline-block p-3 !rounded-lg ${
                     message.role === 'user'
                       ? 'bg-blue-500 text-white'
                       : 'bg-gray-200 dark:bg-gray-700'
@@ -262,29 +257,31 @@ export default function AIAssistantPage() {
           </div>
         </div>
 
-        <div className="border-t bg-white dark:bg-gray-800 p-4">
-          <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex items-center gap-2">
-            <button type="button" className="text-blue-500 flex-shrink-0">✨</button>
-            <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Type question..."
-                className="flex-1 bg-transparent outline-none text-sm"
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setIsInputFocused(false)}
-              />
-            </div>
-            <button 
-              type="submit" 
-              disabled={isLoading}
-              className="px-4 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50"
-            >
-              Send
-            </button>
-          </form>
-        </div>
+        {/* Input form */}
+        <form 
+          onSubmit={handleSendMessage}
+          className="fixed bottom-0 left-0 right-0 bg-background p-4 flex gap-2 items-center border-t"
+        >
+          <button type="button" className="text-blue-500 flex-shrink-0">✨</button>
+          <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Ask me anything..."
+              className="flex-1 bg-transparent outline-none text-sm"
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+            />
+          </div>
+          <button 
+            type="submit" 
+            className="shrink-0"
+            disabled={isLoading || !inputValue.trim()}
+          >
+            <Send className="h-5 w-5" />
+          </button>
+        </form>
       </div>
 
       <style jsx global>{`
