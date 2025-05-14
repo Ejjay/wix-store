@@ -15,6 +15,10 @@
   user-select: none;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -160,4 +164,9 @@
   100% {
     transform: translateX(100%);
   }
+}
+
+.scale-105 {
+  transform: scale(1.05);
+  transition: transform 0.7s ease-out;
 }
