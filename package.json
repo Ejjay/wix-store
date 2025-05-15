@@ -42,8 +42,10 @@
     "react": "19.0.0-rc-f994737d14-20240522",
     "react-dom": "19.0.0-rc-f994737d14-20240522",
     "react-hook-form": "^7.53.0",
+    "react-markdown": "^10.1.0",
     "react-medium-image-zoom": "^5.2.9",
     "react-swipeable": "^7.0.2",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"

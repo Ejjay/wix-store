@@ -10,6 +10,8 @@ import { useSwipeable } from "react-swipeable";
 import { queryProducts } from "@/wix-api/products";
 import { wixBrowserClient } from "@/lib/wix-client.browser";
 import { products } from '@wix/stores';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   buildProductContext,
   INITIAL_SYSTEM_PROMPT,
@@ -364,9 +366,35 @@ export default function AIAssistantPage() {
                 }`}
               >
                 <div
-                  className={`inline-block p-3 message-background-${message.role} ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}
+                  className={`inline-block p-3 rounded-lg 
+                    ${message.role === 'user' 
+                      ? 'bg-blue-500 text-white' 
+                      : 'bg-gray-100 dark:bg-gray-800'
+                    } markdown-content`}
                 >
-                  {message.content}
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      // Custom styling for markdown elements
+                      h1: ({node, ...props}) => <h1 className="text-2xl font-bold mb-2" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-2" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2" {...props} />,
+                      p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2" {...props} />,
+                      ol: ({node, ...props}) => <ol className="list-decimal ml-4 mb-2" {...props} />,
+                      li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                      code: ({node, inline, ...props}) => (
+                        inline 
+                          ? <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded" {...props} />
+                          : <code className="block bg-gray-200 dark:bg-gray-700 p-2 rounded my-2" {...props} />
+                      ),
+                      blockquote: ({node, ...props}) => (
+                        <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />
+                      ),
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
                 </div>
               </div>
             ))}
