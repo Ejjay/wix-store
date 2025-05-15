@@ -1,7 +1,7 @@
 "use client";
 
 import { GoogleGenerativeAI, GenerateContentResult } from "@google/generative-ai";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Send } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -187,6 +187,20 @@ export default function AIAssistantPage() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
 
+  const refreshProductContext = useCallback(async () => {
+    try {
+      const updatedProducts = await fetchAllProducts(wixBrowserClient);
+      setProducts(updatedProducts);
+
+      if (chatInstance) {
+        const newContext = buildProductContext(updatedProducts);
+        await chatInstance.sendMessage(SYSTEM_UPDATE_PROMPT(newContext));
+      }
+    } catch (error) {
+      console.error("Error refreshing product context:", error);
+    }
+  }, [chatInstance]);
+
   useEffect(() => {
     const debugProducts = async () => {
       const products = await fetchAllProducts(wixBrowserClient);
@@ -265,20 +279,6 @@ export default function AIAssistantPage() {
       }]);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const refreshProductContext = async () => {
-    try {
-      const updatedProducts = await fetchAllProducts(wixBrowserClient);
-      setProducts(updatedProducts);
-
-      if (chatInstance) {
-        const newContext = buildProductContext(updatedProducts);
-        await chatInstance.sendMessage(SYSTEM_UPDATE_PROMPT(newContext));
-      }
-    } catch (error) {
-      console.error("Error refreshing product context:", error);
     }
   };
 
