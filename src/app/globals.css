@@ -170,3 +170,60 @@ html {
   transform: scale(1.05);
   transition: transform 0.7s ease-out;
 }
+
+
+/* AI Floating Suggestions */
+
+.animate-scroll {
+   animation: scroll 250s linear infinite;
+       }
+
+        .animate-scroll-reverse {
+          animation: scroll-reverse 250s linear infinite;
+        }
+
+        @keyframes scroll {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes scroll-reverse {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(0%);
+          }
+        }
+
+        .floating-suggestions {
+          display: flex;
+          gap: 8px;
+          padding: 0;
+          justify-content: flex-start;
+          animation: scroll 250s linear infinite;
+        }
+
+        .suggestions-container {
+          overflow: hidden;
+          white-space: nowrap;
+          width: 100%;
+          display: flex;
+        }
+        
+ .user-message {
+  border-radius: 20px 0 20px 20px; /* Adjust this value for roundness */
+  background-color: #3b82f6; /* Tailwind blue-500 */
+  color: white;
+}
+
+.assistant-message {
+  border-radius: 20px 20px 20px 0; 
+  background-color: #e5e7eb;
+  outline: 1px solid #cfd1d5;
+  color: black;
+}

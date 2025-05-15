@@ -139,7 +139,7 @@ const FloatingSuggestions = ({ isHidden }: FloatingSuggestionsProps) => {
 // Function to build product context
 function buildProductContext(products: products.Product[]) {
   return `
-PRODUCT CATALOG (${products.length} total products):
+PRODUCT lists (${products.length} total products):
 ${products.map(p => `
 [PRODUCT]
 - Name: ${p.name}
@@ -150,7 +150,7 @@ ${products.map(p => `
 [END PRODUCT]
 `).join('\n')}
 
-CATALOG END
+PRODUCT LIST END
 `;
 }
 
@@ -217,8 +217,8 @@ export default function AIAssistantPage() {
       console.log("Products fetched:", productsData.length);
 
       if (productsData.length === 0) {
-        console.error("No products found in catalog");
-        throw new Error("Product catalog is empty");
+        console.error("No products found in Product lists");
+        throw new Error("Product lists is empty");
       }
 
       setProducts(productsData);
@@ -226,7 +226,7 @@ export default function AIAssistantPage() {
       
       console.log("Product context built:", productContext);
 
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const chat = model.startChat({
         history: [],
@@ -239,19 +239,20 @@ export default function AIAssistantPage() {
       });
 
       await chat.sendMessage(`
-SYSTEM INITIALIZATION - PRODUCT CATALOG AND RULES:
+WHO YOU ARE: You are EJ Shop's AI shopping assistant, made and developed by Christ Son Alloso.
+SYSTEM INITIALIZATION - PRODUCT LIST AND RULES:
 
 ${productContext}
 
 YOUR ROLE: You are EJ Shop's AI shopping assistant. You have the following responsibilities:
 
-1. You have COMPLETE knowledge of our product catalog listed above
+1. You have COMPLETE knowledge of our Product lists listed above
 2. You must NEVER say you need a product list - you have it above
-3. You can ONLY recommend products from our catalog
+3. You can ONLY recommend products from our Product lists
 4. You must check stock before recommending items
 5. Be confident and specific about our products
 6. If asked about products we don't have, explain we don't carry those items
-7. Always include prices in recommendations
+7. Always respond same as the user's language, using the most simplest basic form of that language whenever possible.
 
 Respond with "INITIALIZED" if you understand these instructions.
       `);
@@ -260,9 +261,8 @@ Respond with "INITIALIZED" if you understand these instructions.
 
       const verificationResponse = await chat.sendMessage(`
 Please confirm:
-1. Total number of products in our catalog
-2. List 3 random products with their prices
-3. Confirm you understand you should never ask for a product list
+1. Total number of products in our Product lists
+2. Confirm you understand you should never ask for a product list
       `);
       
       const verificationText = await verificationResponse.response.text();
@@ -284,11 +284,11 @@ Please confirm:
 
     try {
       const result = await chatInstance.sendMessage(`
-CONTEXT REMINDER: You are EJ Shop's AI assistant with access to our product catalog.
+CONTEXT REMINDER: You are EJ Shop's AI assistant with access to our product Product lists.
 CURRENT REQUEST: ${userMessage}
 
 Remember:
-1. Only recommend from our catalog
+1. Only recommend from our Product lists
 2. Include prices
 3. Check stock before recommending
 4. Be specific about features
@@ -317,7 +317,7 @@ Your response:
       if (chatInstance) {
         const newContext = buildProductContext(updatedProducts);
         await chatInstance.sendMessage(`
-SYSTEM: Updating product catalog information. Please confirm update.
+SYSTEM: Updating product Product lists information. Please confirm update.
 ${newContext}
 `);
       }
@@ -387,7 +387,7 @@ ${newContext}
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto px-4 pb-[120px]"> {/* Updated padding-bottom */}
           {!isHidden && (
             <>
               <div className="flex justify-center items-center mb-8 mt-6">
@@ -400,7 +400,7 @@ ${newContext}
             </>
           )}
 
-          <div className="px-4 mt-4">
+          <div className="mt-4">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -409,11 +409,7 @@ ${newContext}
                 }`}
               >
                 <div
-                  className={`inline-block p-3 !rounded-lg ${
-                    message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700'
-                  }`}
+                  className={`inline-block p-3 message-background-${message.role} ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}
                 >
                   {message.content}
                 </div>
@@ -431,7 +427,7 @@ ${newContext}
         {/* Input form */}
         <form 
           onSubmit={handleSendMessage}
-          className="fixed bottom-0 left-0 right-0 bg-background p-4 flex gap-2 items-center border-t"
+          className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex gap-2 items-center" // Updated styling
         >
           <button type="button" className="text-blue-500 flex-shrink-0">✨</button>
           <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
@@ -454,49 +450,6 @@ ${newContext}
           </button>
         </form>
       </div>
-
-      <style jsx global>{`
-        .animate-scroll {
-          animation: scroll 250s linear infinite;
-        }
-
-        .animate-scroll-reverse {
-          animation: scroll-reverse 250s linear infinite;
-        }
-
-        @keyframes scroll {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-
-        @keyframes scroll-reverse {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(0%);
-          }
-        }
-
-        .floating-suggestions {
-          display: flex;
-          gap: 8px;
-          padding: 0;
-          justify-content: flex-start;
-          animation: scroll 250s linear infinite;
-        }
-
-        .suggestions-container {
-          overflow: hidden;
-          white-space: nowrap;
-          width: 100%;
-          display: flex;
-        }
-      `}</style>
     </div>
   );
 }
