@@ -145,7 +145,6 @@ ${products.map(p => `
 - Name: ${p.name}
 - Price: ${p.priceData?.formatted?.price || 'Price not available'}
 - Stock: ${p.stock?.inStock ? `In Stock (${p.stock.quantity} available)` : 'Out of Stock'}
-- Category: ${p.category?.name || 'Uncategorized'}
 - Description: ${p.description?.substring(0, 100) || 'No description'}...
 [END PRODUCT]
 `).join('\n')}
