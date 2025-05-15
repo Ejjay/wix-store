@@ -169,10 +169,12 @@ async function fetchAllProducts(client: any) {
 
   while (hasMore) {
     const productsData = await queryProducts(client, {
-      limit: pageSize,
-      offset: currentPage * pageSize,
-      sort: "last_updated"
-    });
+  limit: pageSize,
+  paging: {
+    page: currentPage
+  },
+  sort: "last_updated"
+});
 
     allProducts = allProducts.concat(productsData.items);
 
