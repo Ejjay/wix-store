@@ -1,6 +1,6 @@
 "use client"; 
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerateContentResult } from "@google/generative-ai";
 import { useState, useEffect, useRef } from "react";
 import { X, Send } from "lucide-react";
 import Image from "next/image";
@@ -334,17 +334,17 @@ ${newContext}
   }, []);
 
   useEffect(() => {
-    if (chatInstance) {
-      chatInstance.sendMessage("What products do we have in stock?")
-        .then(result => result.response.text())
-        .then(text => {
-          console.log("AI product knowledge test:", text);
-        })
-        .catch(error => {
-          console.error("AI test failed:", error);
-        });
-    }
-  }, [chatInstance]);
+  if (chatInstance) {
+    chatInstance.sendMessage("What products do we have in stock?")
+      .then((result: GenerateContentResult) => result.response.text())
+      .then(text => {
+        console.log("AI product knowledge test:", text);
+      })
+      .catch(error => {
+        console.error("AI test failed:", error);
+      });
+  }
+}, [chatInstance]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
