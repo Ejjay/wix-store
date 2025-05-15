@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { GoogleGenerativeAI, GenerateContentResult } from "@google/generative-ai";
 import { useState, useEffect, useRef } from "react";
@@ -188,7 +188,6 @@ export default function AIAssistantPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Debug logging
     const debugProducts = async () => {
       const products = await fetchAllProducts(wixBrowserClient);
       console.log("Available products:", products.map(p => ({
@@ -289,7 +288,7 @@ export default function AIAssistantPage() {
     const interval = setInterval(refreshProductContext, 300000); // Refresh every 5 minutes
 
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshProductContext]);
 
   useEffect(() => {
     if (chatInstance) {
