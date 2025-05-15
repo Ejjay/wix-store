@@ -337,10 +337,10 @@ ${newContext}
   if (chatInstance) {
     chatInstance.sendMessage("What products do we have in stock?")
       .then((result: GenerateContentResult) => result.response.text())
-      .then(text => {
+      .then((text: string) => {  // Add type annotation here
         console.log("AI product knowledge test:", text);
       })
-      .catch(error => {
+      .catch((error: Error) => {  // Also add type annotation here for consistency
         console.error("AI test failed:", error);
       });
   }
