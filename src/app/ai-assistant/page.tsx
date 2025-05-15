@@ -170,9 +170,7 @@ async function fetchAllProducts(client: any) {
   while (hasMore) {
     const productsData = await queryProducts(client, {
   limit: pageSize,
-  paging: {
-    page: currentPage
-  },
+  skip: currentPage * pageSize,
   sort: "last_updated"
 });
 
