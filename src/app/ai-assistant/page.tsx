@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useEffect, useRef } from "react";
