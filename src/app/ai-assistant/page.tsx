@@ -344,7 +344,7 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 overflow-y-auto px-4 pb-[120px]"> {/* Updated padding-bottom */}
+        <div className="flex-1 overflow-y-auto px-4 pb-[120px]">
           {!isHidden && (
             <>
               <div className="flex justify-center items-center mb-8 mt-6">
@@ -366,30 +366,48 @@ export default function AIAssistantPage() {
                 }`}
               >
                 <div
-                  className={`inline-block p-3 rounded-lg 
-                    ${message.role === 'user' 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-gray-100 dark:bg-gray-800'
-                    } markdown-content`}
+                  className={`inline-block p-3 ${
+                    message.role === 'user' ? 'user-message' : 'assistant-message'
+                  } markdown-content`}
                 >
-                  <ReactMarkdown 
+                  <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
                       // Custom styling for markdown elements
-                      h1: ({node, ...props}) => <h1 className="text-2xl font-bold mb-2" {...props} />,
-                      h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-2" {...props} />,
-                      h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2" {...props} />,
-                      p: ({node, ...props}) => <p className="mb-2" {...props} />,
-                      ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2" {...props} />,
-                      ol: ({node, ...props}) => <ol className="list-decimal ml-4 mb-2" {...props} />,
-                      li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                      code: ({node, inline, ...props}) => (
-                        inline 
-                          ? <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded" {...props} />
-                          : <code className="block bg-gray-200 dark:bg-gray-700 p-2 rounded my-2" {...props} />
+                      h1: ({ node, ...props }) => (
+                        <h1 className="text-2xl font-bold mb-2" {...props} />
                       ),
-                      blockquote: ({node, ...props}) => (
-                        <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />
+                      h2: ({ node, ...props }) => (
+                        <h2 className="text-xl font-bold mb-2" {...props} />
+                      ),
+                      h3: ({ node, ...props }) => (
+                        <h3 className="text-lg font-bold mb-2" {...props} />
+                      ),
+                      p: ({ node, ...props }) => <p className="mb-2" {...props} />,
+                      ul: ({ node, ...props }) => (
+                        <ul className="list-disc ml-4 mb-2" {...props} />
+                      ),
+                      ol: ({ node, ...props }) => (
+                        <ol className="list-decimal ml-4 mb-2" {...props} />
+                      ),
+                      li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                      code: ({ node, inline, ...props }) =>
+                        inline ? (
+                          <code
+                            className="bg-gray-200 dark:bg-gray-700 px-1 rounded"
+                            {...props}
+                          />
+                        ) : (
+                          <code
+                            className="block bg-gray-200 dark:bg-gray-700 p-2 rounded my-2"
+                            {...props}
+                          />
+                        ),
+                      blockquote: ({ node, ...props }) => (
+                        <blockquote
+                          className="border-l-4 border-gray-300 pl-4 italic my-2"
+                          {...props}
+                        />
                       ),
                     }}
                   >
@@ -410,7 +428,7 @@ export default function AIAssistantPage() {
         {/* Input form */}
         <form 
           onSubmit={handleSendMessage}
-          className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex gap-2 items-center" // Updated styling
+          className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex gap-2 items-center"
         >
           <button type="button" className="text-blue-500 flex-shrink-0">✨</button>
           <div className="flex-1 px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center">
