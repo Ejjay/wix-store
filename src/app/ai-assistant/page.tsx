@@ -10,6 +10,14 @@ import { useSwipeable } from "react-swipeable";
 import { queryProducts } from "@/wix-api/products";
 import { wixBrowserClient } from "@/lib/wix-client.browser";
 import { products } from '@wix/stores';
+import {
+  buildProductContext,
+  INITIAL_SYSTEM_PROMPT,
+  VERIFICATION_PROMPT,
+  MESSAGE_CONTEXT_REMINDER,
+  PRODUCT_KNOWLEDGE_TEST,
+  SYSTEM_UPDATE_PROMPT
+} from './ai-instructions';
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
@@ -134,23 +142,6 @@ const FloatingSuggestions = ({ isHidden }: FloatingSuggestionsProps) => {
       </div>
     </div>
   );
-};
-
-// Function to build product context
-function buildProductContext(products: products.Product[]) {
-  return `
-PRODUCT lists (${products.length} total products):
-${products.map(p => `
-[PRODUCT]
-- Name: ${p.name}
-- Price: ${p.priceData?.formatted?.price || 'Price not available'}
-- Stock: ${p.stock?.inStock ? `In Stock (${p.stock.quantity} available)` : 'Out of Stock'}
-- Description: ${p.description?.substring(0, 100) || 'No description'}...
-[END PRODUCT]
-`).join('\n')}
-
-PRODUCT LIST END
-`;
 }
 
 // Function to fetch all products with pagination
@@ -169,10 +160,10 @@ async function fetchAllProducts(client: any) {
 
   while (hasMore) {
     const productsData = await queryProducts(client, {
-  limit: pageSize,
-  skip: currentPage * pageSize,
-  sort: "last_updated"
-});
+      limit: pageSize,
+      skip: currentPage * pageSize,
+      sort: "last_updated"
+    });
 
     allProducts = allProducts.concat(productsData.items);
 
@@ -237,32 +228,11 @@ export default function AIAssistantPage() {
         },
       });
 
-      await chat.sendMessage(`
-WHO YOU ARE: You are EJ Shop's AI shopping assistant, made and developed by Christ Son Alloso.
-SYSTEM INITIALIZATION - PRODUCT LIST AND RULES:
-
-${productContext}
-
-YOUR ROLE: You are EJ Shop's AI shopping assistant. You have the following responsibilities:
-
-1. You have COMPLETE knowledge of our Product lists listed above
-2. You must NEVER say you need a product list - you have it above
-3. You can ONLY recommend products from our Product lists
-4. You must check stock before recommending items
-5. Be confident and specific about our products
-6. If asked about products we don't have, explain we don't carry those items
-7. Always respond same as the user's language, using the most simplest basic form of that language whenever possible.
-
-Respond with "INITIALIZED" if you understand these instructions.
-      `);
+      await chat.sendMessage(INITIAL_SYSTEM_PROMPT(productContext));
 
       setChatInstance(chat);
 
-      const verificationResponse = await chat.sendMessage(`
-Please confirm:
-1. Total number of products in our Product lists
-2. Confirm you understand you should never ask for a product list
-      `);
+      const verificationResponse = await chat.sendMessage(VERIFICATION_PROMPT);
       
       const verificationText = await verificationResponse.response.text();
       console.log("AI Knowledge Verification:", verificationText);
@@ -282,18 +252,7 @@ Please confirm:
     setIsLoading(true);
 
     try {
-      const result = await chatInstance.sendMessage(`
-CONTEXT REMINDER: You are EJ Shop's AI assistant with access to our product Product lists.
-CURRENT REQUEST: ${userMessage}
-
-Remember:
-1. Only recommend from our Product lists
-2. Include prices
-3. Check stock before recommending
-4. Be specific about features
-
-Your response:
-      `.trim());
+      const result = await chatInstance.sendMessage(MESSAGE_CONTEXT_REMINDER(userMessage));
 
       const text = await result.response.text();
       setMessages(prev => [...prev, { role: 'assistant', content: text }]);
@@ -315,10 +274,7 @@ Your response:
 
       if (chatInstance) {
         const newContext = buildProductContext(updatedProducts);
-        await chatInstance.sendMessage(`
-SYSTEM: Updating product Product lists information. Please confirm update.
-${newContext}
-`);
+        await chatInstance.sendMessage(SYSTEM_UPDATE_PROMPT(newContext));
       }
     } catch (error) {
       console.error("Error refreshing product context:", error);
@@ -334,17 +290,17 @@ ${newContext}
   }, []);
 
   useEffect(() => {
-  if (chatInstance) {
-    chatInstance.sendMessage("What products do we have in stock?")
-      .then((result: GenerateContentResult) => result.response.text())
-      .then((text: string) => {  // Add type annotation here
-        console.log("AI product knowledge test:", text);
-      })
-      .catch((error: Error) => {  // Also add type annotation here for consistency
-        console.error("AI test failed:", error);
-      });
-  }
-}, [chatInstance]);
+    if (chatInstance) {
+      chatInstance.sendMessage(PRODUCT_KNOWLEDGE_TEST)
+        .then((result: GenerateContentResult) => result.response.text())
+        .then((text: string) => { 
+          console.log("AI product knowledge test:", text);
+        })
+        .catch((error: Error) => {  
+          console.error("AI test failed:", error);
+        });
+    }
+  }, [chatInstance]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
