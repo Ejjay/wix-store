@@ -390,12 +390,18 @@ export default function AIAssistantPage() {
                         <ol className="list-decimal ml-4 mb-2" {...props} />
                       ),
                       li: ({ node, ...props }) => <li className="mb-1" {...props} />,
-                      code: ({ node, ...props }) => (
-                        <code
-                          className="block bg-gray-200 dark:bg-gray-700 p-2 rounded my-2"
-                          {...props}
-                        />
-                      ),
+                      code: ({ node, inline, ...props }) =>
+                        inline ? (
+                          <code
+                            className="bg-gray-200 dark:bg-gray-700 px-1 rounded"
+                            {...props}
+                          />
+                        ) : (
+                          <code
+                            className="block bg-gray-200 dark:bg-gray-700 p-2 rounded my-2"
+                            {...props}
+                          />
+                        ),
                       blockquote: ({ node, ...props }) => (
                         <blockquote
                           className="border-l-4 border-gray-300 pl-4 italic my-2"
