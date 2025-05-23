@@ -7,7 +7,7 @@ import "./globals.css";
 import Navbar from "./Navbar";
 import ReactQueryProvider from "./ReactQueryProvider"; 
 import AIChatWidget from "@/components/AIChatWidget";
-import BotAssistant from "@/components/BotAssistant";
+// import BotAssistant from "@/components/BotAssistant";
 import DisableContextMenu from "@/components/DisableContextMenu";
 import Loading from "./loading";
 
@@ -85,7 +85,7 @@ export default function RootLayout({
             <Navbar />
             <div className="min-h-[50vh]">{children}</div>
             <AIChatWidget />
-             <BotAssistant />
+            {/* <BotAssistant /> */}
             <Footer />
           </ReactQueryProvider>
           <Toaster />
