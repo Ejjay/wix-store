@@ -61,7 +61,7 @@ export default function AIChatWidget() {
           style={{ zIndex: 9999 }}
         >
           <iframe
-            src="https://ej-meta-ai-clone.vercel.app"
+            src="https://ejshop-ai-assistant.vercel.app"
             className={`
               w-full h-full
               ${isMobile ? 'rounded-none' : 'rounded-lg'}
