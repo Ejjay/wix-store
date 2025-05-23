@@ -50,34 +50,33 @@ export default function AIChatWidget() {
         />
       )}
 
-      {/* Chat Interface - Fix the positioning and layout */}
+      {/* Chat Interface */}
       {isOpen && (
         <div 
           className={`
             fixed 
             ${isMobile ? 'inset-0' : 'bottom-20 right-4 w-96 h-[600px]'}
-            flex flex-col
             bg-white dark:bg-gray-900
-            transition-all duration-300 ease-in-out
           `}
           style={{ zIndex: 9999 }}
         >
           <iframe
             src="https://ej-meta-ai-clone.vercel.app"
             className={`
-              flex-1
               w-full h-full
               ${isMobile ? 'rounded-none' : 'rounded-lg'}
               shadow-lg
             `}
             style={{
               border: 'none',
-              height: isMobile ? '100vh' : '100%',
-              position: 'fixed',
+              height: '100%', // Changed to 100%
+              width: '100%',
+              position: 'absolute', // Changed to absolute
               top: 0,
               left: 0,
               right: 0,
-              bottom: 0
+              bottom: 0,
+              overflow: 'hidden' // Added to prevent scrolling issues
             }}
           />
           {isMobile && (
