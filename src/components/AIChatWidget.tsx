@@ -18,7 +18,7 @@ export default function AIChatWidget() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Add this new useEffect to manage body scrolling
+  // Manage body scrolling
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -50,31 +50,34 @@ export default function AIChatWidget() {
         />
       )}
 
-      {/* Chat Interface */}
+      {/* Chat Interface - Fix the positioning and layout */}
       {isOpen && (
-        <div className={`
-          fixed 
-          ${isMobile ? 'top-0 left-0 w-full h-full m-0' : 'bottom-20 right-4 w-96 h-[600px]'}
-          transition-all duration-300 ease-in-out
-        `}
-        style={{
-          position: isMobile ? 'fixed' : undefined,
-          zIndex: 9999,
-        }}>
+        <div 
+          className={`
+            fixed 
+            ${isMobile ? 'inset-0' : 'bottom-20 right-4 w-96 h-[600px]'}
+            flex flex-col
+            bg-white dark:bg-gray-900
+            transition-all duration-300 ease-in-out
+          `}
+          style={{ zIndex: 9999 }}
+        >
           <iframe
             src="https://ej-meta-ai-clone.vercel.app"
             className={`
-              rounded-lg 
-              shadow-lg 
-              ${isMobile ? 'w-full h-full m-0 rounded-none' : 'w-full h-full'}
+              flex-1
+              w-full h-full
+              ${isMobile ? 'rounded-none' : 'rounded-lg'}
+              shadow-lg
             `}
             style={{
               border: 'none',
-              position: isMobile ? 'fixed' : undefined,
-              top: isMobile ? 0 : undefined,
-              left: isMobile ? 0 : undefined,
-              right: isMobile ? 0 : undefined,
-              bottom: isMobile ? 0 : undefined,
+              height: isMobile ? '100vh' : '100%',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0
             }}
           />
           {isMobile && (
