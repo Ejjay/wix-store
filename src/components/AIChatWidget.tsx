@@ -13,15 +13,23 @@ export default function AIChatWidget() {
       setIsMobile(window.innerWidth <= 768);
     };
     
-    // Check on mount
     checkMobile();
-    
-    // Add resize listener
     window.addEventListener('resize', checkMobile);
-    
-    // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Add this new useEffect to manage body scrolling
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -32,6 +40,15 @@ export default function AIChatWidget() {
       >
         <MessageCircle className="w-6 h-6 text-white" />
       </button>
+
+      {/* Add overlay when chat is open */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50" 
+          style={{ zIndex: 9998 }}
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
       {/* Chat Interface */}
       {isOpen && (
