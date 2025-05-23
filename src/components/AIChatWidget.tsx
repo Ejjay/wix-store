@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { MessageCircle } from 'lucide-react'; 
 
 export default function AIChatWidget() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -12,7 +13,7 @@ export default function AIChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         className="rounded-full bg-primary p-4"
       >
-        <ChatIcon />
+        <MessageCircle className="w-6 h-6 text-white" /> {/* Use MessageCircle instead */}
       </button>
 
       {/* Chat Interface */}
@@ -23,5 +24,5 @@ export default function AIChatWidget() {
         />
       )}
     </div>
-  )
+  );
 }
