@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { Twitch } from 'lucide-react';
 
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -18,7 +17,6 @@ export default function AIChatWidget() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Manage body scrolling
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -33,15 +31,13 @@ export default function AIChatWidget() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {/* Chat Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded-full bg-primary p-4"
+        className="rounded-full bg-primary p-4 border border-white"
       >
-        <MessageCircle className="w-6 h-6 text-white" />
+        <Twitch className="w-6 h-6 text-white" />
       </button>
 
-      {/* Add overlay when chat is open */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/50" 
@@ -50,7 +46,6 @@ export default function AIChatWidget() {
         />
       )}
 
-      {/* Chat Interface */}
       {isOpen && (
         <div 
           className={`
@@ -69,14 +64,14 @@ export default function AIChatWidget() {
             `}
             style={{
               border: 'none',
-              height: '100%', // Changed to 100%
+              height: '100%',
               width: '100%',
-              position: 'absolute', // Changed to absolute
+              position: 'absolute',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              overflow: 'hidden' // Added to prevent scrolling issues
+              overflow: 'hidden'
             }}
           />
           {isMobile && (
