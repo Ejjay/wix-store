@@ -4,7 +4,11 @@ import { ApiKeyStrategy, createClient, Tokens } from "@wix/sdk";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { WIX_SESSION_COOKIE } from "./constants";
-import { getWixClient } from "./wix-client.base";
+import { getWixClient as baseGetWixClient } from "./wix-client.base";
+
+export const getWixClient = cache((tokens?: Tokens) => {
+  return baseGetWixClient(tokens);
+});
 
 export const getWixServerClient = cache(() => {
   let tokens: Tokens | undefined;
@@ -18,9 +22,7 @@ export const getWixServerClient = cache(() => {
 
 export const getWixAdminClient = cache(() => {
   const wixClient = createClient({
-    modules: {
-      files,
-    },
+    modules: { files },
     auth: ApiKeyStrategy({
       apiKey: env.WIX_API_KEY,
       siteId: env.NEXT_PUBLIC_WIX_SITE_ID,
