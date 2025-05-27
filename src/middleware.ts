@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   if (sessionTokens.accessToken.expiresAt < Math.floor(Date.now() / 1000)) {
     try {
       sessionTokens = await wixClient.auth.renewToken(
-        sessionTokens.refreshToken,
+        sessionTokens.refreshToken
       );
     } catch (error) {
       sessionTokens = await wixClient.auth.generateVisitorTokens();
@@ -27,14 +27,21 @@ export async function middleware(request: NextRequest) {
 
   request.cookies.set(WIX_SESSION_COOKIE, JSON.stringify(sessionTokens));
 
-  const res = NextResponse.next({ request });
+  const response = NextResponse.next({ request });
 
-  res.cookies.set(WIX_SESSION_COOKIE, JSON.stringify(sessionTokens), {
+  response.cookies.set(WIX_SESSION_COOKIE, JSON.stringify(sessionTokens), {
     maxAge: 60 * 60 * 24 * 14,
     secure: process.env.NODE_ENV === "production",
   });
 
-  return res;
+  // CORS headers for API requests
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    response.headers.set('Access-Control-Allow-Origin', process.env.CHATBOT_DOMAIN || '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+
+  return response;
 }
 
 export const config = {
