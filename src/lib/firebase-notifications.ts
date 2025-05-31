@@ -2,7 +2,25 @@ import { getFCMToken, subscribe, unsubscribe } from "webtonative/Firebase/Messag
 import { getLoggedInMember } from "@/wix-api/members";
 import { wixBrowserClient } from "@/lib/wix-client.browser";
 
-const IS_WEBTONATIVE_ENV = typeof window !== 'undefined' && typeof (window as any).webtonative?.Firebase?.Messaging?.getFCMToken === 'function';
+// Check for webtonative environment once and store it.
+// This check might need adjustment if webtonative initializes its bridge later than the initial script load.
+const IS_WEBTONATIVE_ENV = typeof window !== 'undefined' &&
+                           typeof (window as any).webtonative === 'object' &&
+                           (window as any).webtonative !== null &&
+                           typeof (window as any).webtonative.Firebase === 'object' &&
+                           (window as any).webtonative.Firebase !== null &&
+                           typeof (window as any).webtonative.Firebase.Messaging === 'object' &&
+                           (window as any).webtonative.Firebase.Messaging !== null &&
+                           typeof (window as any).webtonative.Firebase.Messaging.getFCMToken === 'function';
+
+if (typeof window !== 'undefined') {
+  console.log(`[Debug] IS_WEBTONATIVE_ENV check: ${IS_WEBTONATIVE_ENV}`);
+  if (!(window as any).webtonative) console.log("[Debug] window.webtonative is not defined");
+  else if (!(window as any).webtonative.Firebase) console.log("[Debug] window.webtonative.Firebase is not defined");
+  else if (!(window as any).webtonative.Firebase.Messaging) console.log("[Debug] window.webtonative.Firebase.Messaging is not defined");
+  else if (typeof (window as any).webtonative.Firebase.Messaging.getFCMToken !== 'function') console.log("[Debug] getFCMToken is not a function on Messaging object");
+}
+
 
 /**
  * Retrieves the FCM token using the webtonative bridge.
@@ -11,26 +29,39 @@ const IS_WEBTONATIVE_ENV = typeof window !== 'undefined' && typeof (window as an
  */
 export const retrieveFCMTokenFromDevice = (): Promise<string | null> => {
   return new Promise((resolve) => {
+    // Alert to indicate the function is being called within the APK environment
+    if (typeof window !== 'undefined' && (window as any).webtonative) {
+        alert("[Debug] retrieveFCMTokenFromDevice called. IS_WEBTONATIVE_ENV: " + IS_WEBTONATIVE_ENV);
+    }
+
+
     if (!IS_WEBTONATIVE_ENV) {
-      console.log("Not in WebToNative environment. Skipping FCM token retrieval.");
+      const notInEnvMsg = "Not in WebToNative environment or API not ready. Skipping FCM token retrieval.";
+      console.log(notInEnvMsg);
+      if (typeof window !== 'undefined' && (window as any).webtonative) alert("[Debug] " + notInEnvMsg); // Alert if webtonative object exists but check failed
       resolve(null);
       return;
     }
 
     try {
+      alert("[Debug] Calling webtonative.getFCMToken..."); // Alert before the actual call
       getFCMToken({
         callback: function(data: { token?: string; error?: string; message?: string }) {
           if (data.token) {
+            alert("[Debug] FCM Token SUCCESS: " + data.token.substring(0, 70) + "..."); // Display part of the token
             console.log("WebToNative: FCM Token received:", data.token);
             resolve(data.token);
           } else {
             const errorMessage = data.error || data.message || "Unknown error retrieving FCM token via webtonative";
+            alert("[Debug] FCM Token ERROR: " + errorMessage); // Display error
             console.error("WebToNative: Error retrieving FCM token:", errorMessage);
             resolve(null);
           }
         }
       });
-    } catch (error) {
+    } catch (error: any) {
+      const exceptionMessage = "Exception caught: " + (error?.message || String(error));
+      alert("[Debug] Exception in getFCMToken call: " + exceptionMessage.substring(0, 100)); // Display exception
       console.error("WebToNative: Exception caught during getFCMToken call:", error);
       resolve(null); // Resolve with null on exception
     }
@@ -44,23 +75,28 @@ export const retrieveFCMTokenFromDevice = (): Promise<string | null> => {
 export const sendTokenToYourBackend = async (token: string): Promise<void> => {
   if (!token) {
     console.warn("sendTokenToYourBackend: No token provided.");
+    alert("[Debug Backend] No token to send to backend."); // Alert if no token
     return;
   }
 
   let userId: string | null = 'guest_user'; // Default for anonymous users
   try {
-    const member = await getLoggedInMember(wixBrowserClient);
+    const member = await getLoggedInMember(wixBrowserClient); //
     if (member?._id) {
       userId = member._id;
     }
   } catch (error) {
     console.warn("sendTokenToYourBackend: Could not retrieve logged-in member for FCM token, defaulting to guest. Error:", error);
+    alert("[Debug Backend] Error getting member ID: " + String(error).substring(0, 50));
   }
 
-  console.log(`Attempting to send FCM token to backend. Token: ${token.substring(0,20)}..., UserID: ${userId}`);
+  const attemptMsg = `Attempting to send FCM token to backend. UserID: ${userId}`;
+  console.log(attemptMsg);
+  alert("[Debug Backend] " + attemptMsg);
+
 
   try {
-    const response = await fetch('/api/store-fcm-token', { // Your backend endpoint
+    const response = await fetch('/api/store-fcm-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,15 +106,20 @@ export const sendTokenToYourBackend = async (token: string): Promise<void> => {
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error(`Failed to send FCM token to backend. Status: ${response.status}, Response: ${errorData}`);
+      const backendErrorMsg = `Failed to send FCM token to backend. Status: ${response.status}, Response: ${errorData.substring(0,100)}`;
+      console.error(backendErrorMsg);
+      alert("[Debug Backend] " + backendErrorMsg);
       throw new Error(`Backend token storage failed: ${response.status}`);
     }
 
     const responseData = await response.json();
-    console.log('FCM token sent to backend successfully:', responseData.message);
+    const successMsg = 'FCM token sent to backend successfully: ' + responseData.message;
+    console.log(successMsg);
+    alert("[Debug Backend] " + successMsg);
   } catch (error) {
-    console.error('Error in sendTokenToYourBackend:', error);
-    // Optionally, implement retry logic or further error handling
+    const catchErrorMsg = 'Error in sendTokenToYourBackend: ' + String(error).substring(0,100);
+    console.error(catchErrorMsg);
+    alert("[Debug Backend] " + catchErrorMsg);
   }
 };
 
@@ -87,24 +128,31 @@ export const sendTokenToYourBackend = async (token: string): Promise<void> => {
  * @param {string} topicName - The name of the topic to subscribe to.
  */
 export const subscribeToFCCTopicOnDevice = async (topicName: string): Promise<void> => {
+  if (typeof window !== 'undefined' && (window as any).webtonative) {
+      alert("[Debug] subscribeToFCCTopicOnDevice called for: " + topicName);
+  }
+
   if (!IS_WEBTONATIVE_ENV) {
     console.log("Not in WebToNative environment. Skipping topic subscription:", topicName);
     return;
   }
   if (!topicName || typeof topicName !== 'string' || topicName.trim() === "") {
     console.warn("subscribeToFCCTopicOnDevice: Invalid topic name provided.");
+    alert("[Debug] Invalid topic name for subscription: " + topicName);
     return;
   }
 
   try {
-    // webtonative's subscribe function might not return a promise or have a callback for success/failure
-    // We'll assume it's synchronous or fire-and-forget based on their docs
+    alert("[Debug] Calling webtonative.subscribe for topic: " + topicName);
     subscribe({
       toTopic: topicName
     });
     console.log(`WebToNative: Attempted subscription to FCM topic: ${topicName}`);
-  } catch (error) {
-    console.error(`WebToNative: Error subscribing to FCM topic "${topicName}":`, error);
+    alert("[Debug] Subscription call made for topic: " + topicName);
+  } catch (error: any) {
+    const subErrorMsg = `Error subscribing to FCM topic "${topicName}": ` + (error?.message || String(error));
+    console.error(`WebToNative: ${subErrorMsg}`);
+    alert("[Debug] " + subErrorMsg.substring(0,100));
   }
 };
 
@@ -113,21 +161,30 @@ export const subscribeToFCCTopicOnDevice = async (topicName: string): Promise<vo
  * @param {string} topicName - The name of the topic to unsubscribe from.
  */
 export const unsubscribeFromFCCTopicOnDevice = async (topicName: string): Promise<void> => {
+   if (typeof window !== 'undefined' && (window as any).webtonative) {
+      alert("[Debug] unsubscribeFromFCCTopicOnDevice called for: " + topicName);
+  }
+
   if (!IS_WEBTONATIVE_ENV) {
     console.log("Not in WebToNative environment. Skipping topic unsubscription:", topicName);
     return;
   }
    if (!topicName || typeof topicName !== 'string' || topicName.trim() === "") {
     console.warn("unsubscribeFromFCCTopicOnDevice: Invalid topic name provided.");
+    alert("[Debug] Invalid topic name for unsubscription: " + topicName);
     return;
   }
 
   try {
+    alert("[Debug] Calling webtonative.unsubscribe for topic: " + topicName);
     unsubscribe({
       fromTopic: topicName
     });
     console.log(`WebToNative: Attempted unsubscription from FCM topic: ${topicName}`);
-  } catch (error) {
-    console.error(`WebToNative: Error unsubscribing from FCM topic "${topicName}":`, error);
+    alert("[Debug] Unsubscription call made for topic: " + topicName);
+  } catch (error: any) {
+    const unsubErrorMsg = `Error unsubscribing from FCM topic "${topicName}": ` + (error?.message || String(error));
+    console.error(`WebToNative: ${unsubErrorMsg}`);
+    alert("[Debug] " + unsubErrorMsg.substring(0,100));
   }
 };
